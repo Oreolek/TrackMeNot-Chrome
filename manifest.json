@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
-  "name": "TrackMeNot", 
+  "name": "TrackMeNot",
   "description": "TMN WebExtension portage",
-  "version": "0.9.1", 
+  "version": "0.10.0",
   "background": {
     "scripts": [
       "trackmenot.js"
@@ -24,9 +24,9 @@
       "matches": ["http://*/*","https://*/*"],
       "js": ["tmn_search.js"],
       "run_at": "document_start",
-      "all_frames" : true  
+      "all_frames" : true
     }
-  ], 
+  ],
   "browser_action": {
     "default_icon": "tmn.png",
     "default_title": "TrackMeNot",
