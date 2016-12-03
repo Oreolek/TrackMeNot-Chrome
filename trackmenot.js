@@ -14,7 +14,7 @@
     along with TrackMeNot.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
 
-var _ = chrome.i18n.getMessage;
+var _ = browser.i18n.getMessage;
 
 if(!TRACKMENOT) var TRACKMENOT = {};
 
@@ -183,13 +183,13 @@ TRACKMENOT.TMNSearch = function() {
 	}
 
 	function updateEngineList() {
-		chrome.storage.local.set({engines : JSON.stringify(engines)}) ;
+		browser.storage.local.set({engines : JSON.stringify(engines)}) ;
 		sendMessageToOptionScript("TMNSendEngines",engines);
 		sendOptionToTab();
 	}
 
 	function sendMessageToOptionScript(title, message) {
-		chrome.runtime.sendMessage({"options":title,"param":message});
+		browser.runtime.sendMessage({"options":title,"param":message});
 	}
 
 	function handleMessageFromOptionScript(title, handler) {
@@ -197,7 +197,7 @@ TRACKMENOT.TMNSearch = function() {
 	}
 
 	function sendMessageToPanelScript(title, message) {
-		 chrome.runtime.sendMessage(title,message);
+		 browser.runtime.sendMessage(title,message);
 	}
 
 	function handleMessageFromPanelScript(title, handler) {
@@ -206,7 +206,11 @@ TRACKMENOT.TMNSearch = function() {
 
   function sendOptionParameters() {
     debug("Sending perameters");
-    var panel_inputs = {"options":getOptions(), "query" : tmn_query, "engine":prev_engine };
+    var panel_inputs = {
+      "options": getOptions(),
+      "query" : tmn_query,
+      "engine": prev_engine
+    };
     sendMessageToPanelScript("TMNSendOption",panel_inputs);
     tmn_panel.port.on("TMNOpenOption",openOptionWindow);
     tmn_panel.port.on("TMNSaveOptions",saveOptionFromTab);
@@ -236,7 +240,9 @@ TRACKMENOT.TMNSearch = function() {
 
   function clearLog() {
     tmnLogs = [];
-    chrome.storage.local.set({"logs_tmn":"{}"});
+    browser.storage.local.set({
+      "logs_tmn":"{}"
+    });
   }
 
   function saveOptionFromTab(options) {
@@ -286,7 +292,7 @@ TRACKMENOT.TMNSearch = function() {
   function iniTab(tab) {
     tmn_tab_id = tab.id;
     tmn_win_id = tab.windowId;
-    chrome.storage.local.set({"tmn_tab_id": tmn_tab_id});
+    browser.storage.local.set({"tmn_tab_id": tmn_tab_id});
   }
 
   function getTMNTab() {
@@ -295,7 +301,7 @@ TRACKMENOT.TMNSearch = function() {
   }
 
   function deleteTab() {
-    chrome.tabs.remove(tmn_tab_id);
+    browser.tabs.remove(tmn_tab_id);
     tmn_tab_id = -1;
   }
 
@@ -303,7 +309,7 @@ TRACKMENOT.TMNSearch = function() {
     if (!useTab || tmn_tab_id != -1) return;
     if(debug) console.log ('Creating tab for TrackMeNot');
     try {
-      chrome.tabs.create({
+      browser.tabs.create({
         'active': false,
         'url': 'http://www.google.com'
       },iniTab);
@@ -392,7 +398,7 @@ TRACKMENOT.TMNSearch = function() {
   }
 
   function monitorBurst() {
-    chrome.webNavigation.onCommitted.addListener(function(e) {
+    browser.webNavigation.onCommitted.addListener(function(e) {
   		var url = e.url;
 	  	var tab_id = e.tabId;
 		  var result = checkForSearchUrl(url);
@@ -417,7 +423,7 @@ TRACKMENOT.TMNSearch = function() {
   	  	var updated_SE = getEngineById(eng);
   			if ( updated_SE && updated_SE.urlmap != asearch ) {
           updated_SE.urlmap = asearch;
-          chrome.storage.local.set({engines :JSON.stringify(engines)}) ;
+          browser.storage.local.set({engines :JSON.stringify(engines)}) ;
           var logEntry = createLog('URLmap', eng, null,null,null, asearch);
           log(logEntry);
           debug("Updated url fr search engine "+ eng + ", new url is "+asearch);
@@ -471,13 +477,13 @@ TRACKMENOT.TMNSearch = function() {
     var randomElt = function (arr) {
       var index = roll(0, arr.length - 1);
       return arr[index];
-    }
+    };
 
     var qtype = randomElt(typeoffeeds);
     debug (qtype);
     var queries = TMNQueries[qtype];
     if ( qtype != 'zeitgeist' && qtype != 'extracted') {
-      queries = randomElt(queries)
+      queries = randomElt(queries);
       if (queries !== undefined && queries.words !== undefined) {
         queries = queries.words;
       } else {
@@ -668,7 +674,7 @@ TRACKMENOT.TMNSearch = function() {
     var i = 0;
     var req =  new XMLHttpRequest();
     req.overrideMimeType("application/json");
-    req.open('GET',chrome.extension.getURL("dhs_keywords.json"),true);
+    req.open('GET',browser.extension.getURL("dhs_keywords.json"),true);
     req.onreadystatechange = function () {
       var response = JSON.parse(req.responseText);
       var keywords = response.keywords;
@@ -752,11 +758,11 @@ TRACKMENOT.TMNSearch = function() {
     var tooltip = {
       'title': 'TMN Error'
     };
-    chrome.browserAction.setBadgeBackgroundColor({
+    browser.browserAction.setBadgeBackgroundColor({
       'color':[255,0,0,255]
     });
-    chrome.browserAction.setBadgeText(details);
-    chrome.browserAction.setTitle(tooltip);
+    browser.browserAction.setBadgeText(details);
+    browser.browserAction.setTitle(tooltip);
   }
 
   function updateOnSend ( queryToSend ) {
@@ -767,11 +773,11 @@ TRACKMENOT.TMNSearch = function() {
     var tooltip = {
       'title': engine+': '+queryToSend
     };
-    chrome.browserAction.setBadgeBackgroundColor({
+    browser.browserAction.setBadgeBackgroundColor({
       'color':[113,113,198,255]
     });
-    chrome.browserAction.setBadgeText(details);
-    chrome.browserAction.setTitle(tooltip);
+    browser.browserAction.setBadgeText(details);
+    browser.browserAction.setTitle(tooltip);
   }
 
   function createLog(type,engine,mode,query,id,asearch) {
@@ -842,7 +848,7 @@ TRACKMENOT.TMNSearch = function() {
         tmnID : tmn_id++
       };
       try {
-        chrome.tabs.sendMessage( tmn_tab_id, TMNReq);
+        browser.tabs.sendMessage( tmn_tab_id, TMNReq);
         debug('Message sent to the tab');
       } catch(ex) {
         rescheduleOnError();
@@ -855,7 +861,7 @@ TRACKMENOT.TMNSearch = function() {
       xhr.onreadystatechange = function() {
         if (xhr.readyState == 4) {
           clearTimeout(tmn_errTimeout);
-          if (xhr.status >= 200 && xhr.status<400 ) {
+          if (xhr.status >= 200 && xhr.status < 400 ) {
             var logEntry = {
               type : 'query',
               engine : engine,
@@ -970,11 +976,12 @@ TRACKMENOT.TMNSearch = function() {
   }
 
   function saveOptions() {
-    //ss.storage.kw_black_list = kwBlackList.join(",");
     var options = getOptions();
-    localStorage.options_tmn = JSON.stringify(options);
-    localStorage.tmn_id = tmn_id;
-    localStorage.gen_queries = JSON.stringify(TMNQueries);
+    browser.storage.local.set({
+      "options_tmn": JSON.stringify(options),
+      "tmn_id": tmn_id,
+      "gen_queries": JSON.stringify(TMNQueries)
+    });
   }
 
   function getOptions() {
@@ -1011,14 +1018,14 @@ TRACKMENOT.TMNSearch = function() {
   }
 
   function restoreOptions () {
-    if (!localStorage.options_tmn) {
+    if (!browser.storage.local.get("options_tmn")) {
       initOptions();
       console.log ("Init: "+ enabled);
       return;
     }
 
     try {
-      var options = JSON.parse(localStorage.options_tmn);
+      var options = JSON.parse(browser.storage.local.get("options_tmn"));
       enabled = options.enabled;
       debug("Restore: "+ enabled);
       useBlackList = options.use_black_list;
@@ -1029,15 +1036,15 @@ TRACKMENOT.TMNSearch = function() {
       disableLogs = options.disableLogs;
       saveLogs =  options.saveLogs;
       useTab  = options.useTab;
-      TMNQueries = JSON.parse(localStorage.gen_queries);
+      TMNQueries = JSON.parse(browser.storage.local.get("gen_queries"));
       feedList = options.feedList;
       tmn_id = options.tmn_id;
       useRss = options.useRss;
-      options.useUserList = options.useUserList;
-      options.userList = options.userList.split(",");
-      tmnLogs =  JSON.parse( localStorage.logs_tmn );
-      engines = JSON.parse( localStorage.engines );
-      if (options.kw_black_list && opions.kw_black_list.length > 0) {
+      useUserList = options.useUserList;
+      userList = options.userList.split(",");
+      tmnLogs =  JSON.parse( browser.storage.local.get("logs_tmn") );
+      engines = JSON.parse( browser.storage.local.get("engines") );
+      if (options.kw_black_list && options.kw_black_list.length > 0) {
         kwBlackList = options.kw_black_list.split(",");
       }
     } catch (ex) {
@@ -1054,8 +1061,8 @@ TRACKMENOT.TMNSearch = function() {
   function restartTMN() {
     createTab();
     enabled = true;
-    chrome.browserAction.setBadgeText({'text':'On'});
-    chrome.browserAction.setTitle({'title':'On'});
+    browser.browserAction.setBadgeText({'text':'On'});
+    browser.browserAction.setTitle({'title':'On'});
     scheduleNextSearch(4000);
   }
 
@@ -1064,11 +1071,11 @@ TRACKMENOT.TMNSearch = function() {
     if (useTab)
       deleteTab();
 
-    chrome.browserAction.setBadgeBackgroundColor({
+    browser.browserAction.setBadgeBackgroundColor({
       'color':[255,0,0,255]
     });
-    chrome.browserAction.setBadgeText({'text':'Off'});
-    chrome.browserAction.setTitle({'title':'Off'});
+    browser.browserAction.setBadgeText({'text':'Off'});
+    browser.browserAction.setTitle({'title':'Off'});
     window.clearTimeout(tmn_searchTimer);
     window.clearTimeout(tmn_errTimeout);
   }
@@ -1078,7 +1085,6 @@ TRACKMENOT.TMNSearch = function() {
       tmn_tab = null;
       console.log ('TMN tab has been deleted by the user, reload it');
       createTab();
-      return;
     }
   }
   function formatNum ( val) {
@@ -1087,7 +1093,8 @@ TRACKMENOT.TMNSearch = function() {
   }
 
   function log (entry) {
-    if (disableLogs) return;
+    if (disableLogs)
+      return;
     try  {
       if (entry !== null)  {
         if (entry.type === 'query') {
@@ -1104,18 +1111,19 @@ TRACKMENOT.TMNSearch = function() {
       console.log ("[ERROR] "+ ex +" / "+ ex.message +  "\nlogging msg");
     }
     tmnLogs.unshift(entry);
-    chrome.storage.local.set({"logs_tmn":JSON.stringify(tmnLogs)});
+    browser.storage.local.set({
+      "logs_tmn": JSON.stringify(tmnLogs)
+    });
   }
 
   function sendClickEvent() {
     if ( prev_engine  ) {
       console.log ("About to click on " + prev_engine);
-      chrome.tabs.sendMessage(tmn_tab_id,{tmn_engine:getEngineById(prev_engine)});
+      browser.tabs.sendMessage(tmn_tab_id,{tmn_engine:getEngineById(prev_engine)});
     }
   }
 
   function handleRequest(request, sender, sendResponse) {
-
     if (request.tmnLog) {
       console.log ("Background logging : " + request.tmnLog);
       var logtext = JSON.parse(request.tmnLog);
@@ -1148,7 +1156,9 @@ TRACKMENOT.TMNSearch = function() {
       var eng = vars[0];
       var asearch = vars[1];
       currentUrlMap[eng] = asearch;
-      localStorage.url_map_tmn = JSON.stringify(currentUrlMap);
+      browser.storage.local.set({
+        "url_map_tmn": JSON.stringify(currentUrlMap)
+      });
       var logEntry = {
         'type' : 'URLmap',
         "engine" : eng,
@@ -1232,7 +1242,7 @@ TRACKMENOT.TMNSearch = function() {
 
     startTMN : function () {
       restoreOptions();
-      //chrome.browserAction.setPopup("tmn_menu.html");
+      //browser.browserAction.setPopup("tmn_menu.html");
       typeoffeeds.push('zeitgeist');
       TMNQueries.zeitgeist = zeitgeist;
 
@@ -1271,30 +1281,30 @@ TRACKMENOT.TMNSearch = function() {
 
       if (enabled) {
 
-        chrome.browserAction.setBadgeText({
+        browser.browserAction.setBadgeText({
           'text':'ON'
         });
-        chrome.browserAction.setTitle({
+        browser.browserAction.setTitle({
           'title': 'TMN is ON'
         });
 
         createTab();
         scheduleNextSearch(4000);
       } else {
-        chrome.browserAction.setBadgeText({
+        browser.browserAction.setBadgeText({
           'text':'OFF'
         });
-        chrome.browserAction.setTitle({
+        browser.browserAction.setTitle({
           'title': 'TMN is OFF'
         });
       }
 
-      chrome.windows.onRemoved.addListener(function() {
-        if (useTabe) {
+      browser.windows.onRemoved.addListener(function() {
+        if (useTab) {
           deleteTab();
         }
         if (!saveLogs)
-          chrome.storage.local.set({"logs_tmn" : ""});
+          browser.storage.local.set({"logs_tmn" : ""});
       });
 
     },
@@ -1347,7 +1357,7 @@ TRACKMENOT.TMNSearch = function() {
     _hideTMNTab : function(tab_id) {
       if (tab_id == tmn_tab_id ) {
         console.log ('TMN tab has been selected by the user, hidding it');
-        chrome.tabs.remove( tmn_tab_id );
+        browser.tabs.remove( tmn_tab_id );
         return;
       }
 
@@ -1356,7 +1366,7 @@ TRACKMENOT.TMNSearch = function() {
     _deleteTabWhenClosing : function(win_id) {
       if (useTabe && tmn_win_id == win_id ) {
         console.log ('TMN win has been closed by the user, close the tab');
-        chrome.tabs.remove( tmn_tab_id );
+        browser.tabs.remove( tmn_tab_id );
         return;
       }
 
@@ -1374,10 +1384,10 @@ TRACKMENOT.TMNSearch = function() {
   };
 }();
 
-chrome.runtime.onMessage.addListener(TRACKMENOT.TMNSearch._handleRequest);
+browser.runtime.onMessage.addListener(TRACKMENOT.TMNSearch._handleRequest);
 
-//chrome.tabs.onSelectionChanged.addListener(TRACKMENOT.TMNSearch._hideTMNTab);
-chrome.tabs.onRemoved.addListener(TRACKMENOT.TMNSearch._preserveTMNTab);
-//chrome.windows.onRemoved.addListener(TRACKMENOT.TMNSearch._deleteTabWhenClosing);
+//browser.tabs.onSelectionChanged.addListener(TRACKMENOT.TMNSearch._hideTMNTab);
+browser.tabs.onRemoved.addListener(TRACKMENOT.TMNSearch._preserveTMNTab);
+//browser.windows.onRemoved.addListener(TRACKMENOT.TMNSearch._deleteTabWhenClosing);
 
 TRACKMENOT.TMNSearch.startTMN();

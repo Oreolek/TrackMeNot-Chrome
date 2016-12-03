@@ -1,15 +1,19 @@
 var tmn_options ={};
-var tmn = chrome.extension.getBackgroundPage().TRACKMENOT.TMNSearch;
+var tmn = browser.extension.getBackgroundPage().TRACKMENOT.TMNSearch;
 var options = null;
 
 function loadHandlers() {
   $("#apply-options").click( function() {
-    tmn_options = {"options":saveOptions()};
-    chrome.runtime.sendMessage({'tmn':"TMNSaveOptions",'option':tmn_options.options});
+    tmn_options = {
+      "options": saveOptions()
+    };
+    browser.runtime.sendMessage({
+      'tmn':"TMNSaveOptions",
+      'option':tmn_options.options
+    });
+    TMNSetOptionsMenu(tmn_options.options);
     alert("Configuration saved");
-    TMNSetOptionsMenu(tmn_options);
-  }
-  );
+  });
 
   $("#show-add").click( function() {
     $("#add-engine-table").show();
@@ -22,7 +26,7 @@ function loadHandlers() {
   $("#validate-feed").click( function() {
     var feeds = $("#trackmenot-seed").val();
     var param = {"feeds": feeds};
-    chrome.runtime.sendMessage({'tmn':"TMNValideFeeds",'param':param});
+    browser.runtime.sendMessage({'tmn':"TMNValideFeeds",'param':param});
   }
   );
 
@@ -30,7 +34,7 @@ function loadHandlers() {
 
   $("#search-engine-list").on('click', 'button.smallbutton', function(event) {
     var del_engine = event.target.id.split("_").pop();
-    chrome.runtime.sendMessage({'tmn':"TMNDelEngine",'engine':del_engine});
+    browser.runtime.sendMessage({'tmn':"TMNDelEngine",'engine':del_engine});
   });
 
   $("#help-faq").click( function() {
@@ -50,16 +54,15 @@ function loadHandlers() {
       alert("Did not find 'trackmenot' in the URL");
       return;
     }
-    chrome.runtime.sendMessage({'tmn':"TMNAddEngine",'engine': engine});
-  }
-  );
+    browser.runtime.sendMessage({'tmn':"TMNAddEngine",'engine': engine});
+  });
 }
 
-function TMNSetOptionsMenu( ) {
-  var options = tmn._getOptions();
+function TMNSetOptionsMenu( options ) {
+  var default_options = tmn._getOptions();
+  options = $.extend({}, default_options, options);
   var feedList = options.feedList;
   var kw_black_list = options.kw_black_list;
-  //console.log("Enabled: " +options.enabled)
   $("#add-engine-table").hide();
   $("#trackmenot-opt-enabled").prop('checked', options.enabled);
   $("#trackmenot-opt-useTab").prop('checked',options.useTab);
@@ -261,6 +264,6 @@ document.addEventListener('DOMContentLoaded', function () {
   loadHandlers();
 });
 
-chrome.runtime.onMessage.addListener(function(){
+browser.runtime.onMessage.addListener(function(){
   handleRequest();
 });
