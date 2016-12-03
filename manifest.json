@@ -1,18 +1,24 @@
 {
-"manifest_version": 2,
-  "name": "TrackMeNot",
-  "version": "0.8.3",
-  "icons": { "16": "icon16.png",
-           "48": "icon32.png"},
-  "description": "TMN portage on Chrome",
-  "browser_action": {
-    "default_icon": "tmn.png",
-    "default_popup": "tmn_menu.html"
-  },
+  "manifest_version": 2,
+  "name": "TrackMeNot", 
+  "description": "TMN WebExtension portage",
+  "version": "0.9.1", 
   "background": {
-    "scripts": ["trackmenot.js"]
+    "scripts": [
+      "trackmenot.js"
+    ]
+  },
+  "applications": {
+    "gecko": {
+      "id": "trackmenot@mrl.nyu.edu",
+      "strict_min_version": "42.0"
+    }
   },
   "options_page": "options.html",
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon32.png"
+  },
   "content_scripts": [
     {
       "matches": ["http://*/*","https://*/*"],
@@ -20,9 +26,17 @@
       "run_at": "document_start",
       "all_frames" : true  
     }
-  ],  
+  ], 
+  "browser_action": {
+    "default_icon": "tmn.png",
+    "default_title": "TrackMeNot",
+    "default_popup": "tmn_menu.html"
+  },
   "permissions": [
-  "tabs","https://*/*","http://*/*","webNavigation","storage"
-]     
+    "storage",
+    "tabs",
+    "webNavigation",
+    "https://*/*",
+    "http://*/*"
+  ]
 }
-
