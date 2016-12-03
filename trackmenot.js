@@ -26,13 +26,13 @@ TRACKMENOT.TMNSearch = function() {
     var debug_ = true;
     var load_full_pages = false;
     var last_url = "";
-    var stop_when = "start"
+    var stop_when = "start";
     var useIncrementals = true;
     var incQueries = [];
     var searchEngines = "google";
     var engine = 'google';
     var TMNQueries = {};
-    var branch =  "extensions.trackmenot."
+    var branch =  "extensions.trackmenot.";
     var feedList = 'http://www.techmeme.com/index.xml|http://rss.slashdot.org/Slashdot/slashdot|http://feeds.nytimes.com/nyt/rss/HomePage';
     var tmnLogs = [];
     var disableLogs = false;
@@ -41,9 +41,9 @@ TRACKMENOT.TMNSearch = function() {
     var useBlackList = true;
     var useDHSList = false;
     var typeoffeeds = [];
-    var zeitgeist = ["facebook","youtube","myspace","craigslist","ebay","yahoo","walmart","netflix","amazon","home depot","best buy","Kentucky Derby","NCIS","Offshore Drilling","Halle Berry","iPad Cases","Dorothy Provine","Emeril","Conan O'Brien","Blackberry","Free Comic Book Day"," American Idol","Palm","Montreal Canadiens","George Clooney","Crib Recall","Auto Financing","Katie Holmes","Madea's Big Happy Family","Old Navy Coupon","Sandra Bullock","Dancing With the Stars","M.I.A.","Matt Damon","Santa Clara County","Joey Lawrence","Southwest Airlines","Malcolm X","Milwaukee Bucks","Goldman Sachs","Hugh Hefner","Tito Ortiz","David McLaughlin","Box Jellyfish","Amtrak","Molly Ringwald","Einstein Horse","Oil Spill"," Bret Michaels","Mississippi Tornado","Stephen Hawking","Kelley Blue Book","Hertz","Mariah Carey","Taiwan Earthquake","Justin Bieber","Public Bike Rental","BlackBerry Pearl","NFL Draft","Jillian Michaels","Face Transplant","Dell","Jack in the Box","Rebbie Jackson","Xbox","Pampers","William Shatner","Earth Day","American Idol","Heather Locklear","McAfee Anti-Virus","PETA","Rihanna","South Park","Tiger Woods","Kate Gosselin","Unemployment","Dukan Diet","Oil Rig Explosion","Crystal Bowersox","New 100 Dollar Bill","Beastie Boys","Melanie Griffith","Borders","Tara Reid","7-Eleven","Dorothy Height","Volcanic Ash","Space Shuttle Discovery","Gang Starr","Star Trek","Michael Douglas","NASCAR","Isla Fisher","Beef Recall","Rolling Stone Magazine","ACM Awards","NASA Space Shuttle","Boston Marathon","Iraq","Jennifer Aniston"]
+    var zeitgeist = ["facebook","youtube","myspace","craigslist","ebay","yahoo","walmart","netflix","amazon","home depot","best buy","Kentucky Derby","NCIS","Offshore Drilling","Halle Berry","iPad Cases","Dorothy Provine","Emeril","Conan O'Brien","Blackberry","Free Comic Book Day"," American Idol","Palm","Montreal Canadiens","George Clooney","Crib Recall","Auto Financing","Katie Holmes","Madea's Big Happy Family","Old Navy Coupon","Sandra Bullock","Dancing With the Stars","M.I.A.","Matt Damon","Santa Clara County","Joey Lawrence","Southwest Airlines","Malcolm X","Milwaukee Bucks","Goldman Sachs","Hugh Hefner","Tito Ortiz","David McLaughlin","Box Jellyfish","Amtrak","Molly Ringwald","Einstein Horse","Oil Spill"," Bret Michaels","Mississippi Tornado","Stephen Hawking","Kelley Blue Book","Hertz","Mariah Carey","Taiwan Earthquake","Justin Bieber","Public Bike Rental","BlackBerry Pearl","NFL Draft","Jillian Michaels","Face Transplant","Dell","Jack in the Box","Rebbie Jackson","Xbox","Pampers","William Shatner","Earth Day","American Idol","Heather Locklear","McAfee Anti-Virus","PETA","Rihanna","South Park","Tiger Woods","Kate Gosselin","Unemployment","Dukan Diet","Oil Rig Explosion","Crystal Bowersox","New 100 Dollar Bill","Beastie Boys","Melanie Griffith","Borders","Tara Reid","7-Eleven","Dorothy Height","Volcanic Ash","Space Shuttle Discovery","Gang Starr","Star Trek","Michael Douglas","NASCAR","Isla Fisher","Beef Recall","Rolling Stone Magazine","ACM Awards","NASA Space Shuttle","Boston Marathon","Iraq","Jennifer Aniston"];
     var tmn_timeout = 6000;
-    var prev_engine = "None"
+    var prev_engine = "None";
     var burstEngine = '';
     var burstTimeout = 6000;
     var burstEnabled = false;
@@ -75,18 +75,18 @@ TRACKMENOT.TMNSearch = function() {
       /Developers/,/cashback/,/Health/,/Products/,/QnABeta/,
       /<more>/,/Travel/,/Personals/,/Local/,/Trademarks/,
       /cache/i,/similar/i,/login/i,/mail/i,/feed/i
-    )
+    );
 
 	var testAd_google = function(anchorClass,anchorlink) {
     return ( anchorlink
       && (anchorClass=='l'  || anchorClass=='l vst')
-      && anchorlink.indexOf('http')==0
-      && anchorlink.indexOf('https')!=0);
-  }
+      && anchorlink.indexOf('http') === 0
+      && anchorlink.indexOf('https') !== 0);
+  };
 
 	var testAd_yahoo= function(anchorClass,anchorlink) {
     return ( anchorClass=='\"yschttl spt\"' || anchorClass=='yschttl spt');
-  }
+  };
 
 	var  testAd_aol = function(anchorClass,anchorlink) {
     return (anchorClass=='\"find\"' || anchorClass=='find'
