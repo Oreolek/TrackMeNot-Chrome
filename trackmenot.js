@@ -432,6 +432,7 @@ TRACKMENOT.TMNSearch = function() {
 
   function checkForSearchUrl(url) {
     var result = null;
+    var id = null;
     for (var i=0;i< engines.length; i++){
 			var eng = engines[i];
       var regex = eng.regexmap;
@@ -439,21 +440,22 @@ TRACKMENOT.TMNSearch = function() {
 
       if (result)  {
         cout(regex + " MATCHED! on "+eng.id );
+        id = eng.id;
         break;
       }
     }
     if (!result)
       return null;
 
-    if (result.length !=4 ){
-      if (result.length ==6 && eng.id == "google"  ) {
+    if (result.length !== 4 ){
+      if (result.length === 6 && id == "google"  ) {
         result.splice(2,2);
-        result.push(eng.id);
+        result.push(id);
         return result;
       }
       cout("REGEX_ERROR: "+url);
     }
-    result.push(eng.id);
+    result.push(id);
     return result;
   }
 
