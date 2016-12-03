@@ -23,7 +23,7 @@ TRACKMENOT.TMNSearch = function() {
     var tmn_tab = null;
     var useTab = false;
     var enabled = true;
-    var debug_ = true;
+    var debug_ = false;
     var load_full_pages = false;
     var last_url = "";
     var stop_when = "start";
@@ -236,7 +236,7 @@ TRACKMENOT.TMNSearch = function() {
 
   function clearLog() {
     tmnLogs = [];
-    sendLogToOption();
+    chrome.storage.local.set({"logs_tmn":"{}"});
   }
 
   function saveOptionFromTab(options) {
@@ -301,7 +301,7 @@ TRACKMENOT.TMNSearch = function() {
 
   function createTab() {
     if (!useTab || tmn_tab_id != -1) return;
-    if(debug) cout('Creating tab for TrackMeNot');
+    if(debug) console.log ('Creating tab for TrackMeNot');
     try {
       chrome.tabs.create({
         'active': false,
@@ -367,7 +367,10 @@ TRACKMENOT.TMNSearch = function() {
   }
 
   function trim(s)  {
-    return s.replace(/\n/g,'');
+    if (s !== null) {
+      return s.replace(/\n/g,'');
+    }
+    return s;
   }
 
   function cerr(msg, e){
@@ -376,11 +379,7 @@ TRACKMENOT.TMNSearch = function() {
       txt += "\n" + e;
       if (e.message)txt+=" | "+e.message;
     } else txt += " / No Exception";
-    cout(txt);
-  }
-
-  function cout (msg) {
-    console.log(msg);
+    console.log (txt);
   }
 
   function debug (msg) {
@@ -390,12 +389,6 @@ TRACKMENOT.TMNSearch = function() {
 
   function roll(min,max){
     return Math.floor(Math.random()*(max+1))+min;
-  }
-
-  function randomElt(array) {
-		cout("Array length: "+array.length);
-    var index = roll(0,array.length-1);
-    return array[index];
   }
 
   function monitorBurst() {
@@ -442,7 +435,7 @@ TRACKMENOT.TMNSearch = function() {
       result = url.match(regex);
 
       if (result)  {
-        cout(regex + " MATCHED! on "+eng.id );
+        console.log (regex + " MATCHED! on "+eng.id );
         id = eng.id;
         break;
       }
@@ -456,7 +449,7 @@ TRACKMENOT.TMNSearch = function() {
         result.push(id);
         return result;
       }
-      cout("REGEX_ERROR: "+url);
+      console.log ("REGEX_ERROR: "+url);
     }
     result.push(id);
     return result;
@@ -470,27 +463,42 @@ TRACKMENOT.TMNSearch = function() {
     return engines[Math.floor(Math.random()*engines.length)];
   }
 
+  /**
+   * The function that constructs a random search query.
+   * Used in doSearch, also see getSubQuery()
+   */
   function randomQuery()  {
+    var randomElt = function (arr) {
+      var index = roll(0, arr.length - 1);
+      return arr[index];
+    }
+
     var qtype = randomElt(typeoffeeds);
-    cout(qtype);
-    var queries = [];
-    if ( qtype != 'zeitgeist' && qtype!='extracted') {
-      var queryset = TMNQueries[qtype];
-      queries = randomElt(queryset).words;
-    } else queries = TMNQueries[qtype];
+    debug (qtype);
+    var queries = TMNQueries[qtype];
+    if ( qtype != 'zeitgeist' && qtype != 'extracted') {
+      queries = randomElt(queries)
+      if (queries !== undefined && queries.words !== undefined) {
+        queries = queries.words;
+      } else {
+        // no real result to return, try again
+        return randomQuery();
+      }
+    }
     var term = trim( randomElt(queries) );
-    if (!term || term.length<1)
-      throw new Error("queryIdx="+queryIdx+" getQuery.term='"+term+"'");
+    if (!term || term.length<1) {
+      throw new Error("getQuery.term='"+term+"'");
+    }
     return term;
   }
 
   function validateFeeds(param) {
     TMNQueries.rss = [];
     feedList = param.feeds;
-    cout("Validating the feeds: "+ feedList);
+    console.log ("Validating the feeds: "+ feedList);
     var feeds = feedList.split('|');
     for (var i=0;i<feeds.length;i++) {
-      cout(" Fetching  " + feeds[i]);
+      console.log (" Fetching  " + feeds[i]);
       doRssFetch(feeds[i]);
     }
     saveOptions();
@@ -501,7 +509,7 @@ TRACKMENOT.TMNSearch = function() {
     var splitRegExp = new RegExp('^[\\[\\]\\(\\)\\"\']', "g");
 
     if (!html) {
-      cout("NO HTML!");
+      console.log ("NO HTML!");
       return;
     }
 
@@ -528,7 +536,7 @@ TRACKMENOT.TMNSearch = function() {
       var rand = roll(0,TMNQueries.extracted.length-1);
       TMNQueries.extracted.splice(rand , 1);
     }
-    cout(TMNQueries.extracted);
+    debug (TMNQueries.extracted);
     addQuery(queryToAdd,TMNQueries.extracted);
   }
 
@@ -584,7 +592,7 @@ TRACKMENOT.TMNSearch = function() {
       return false;
 
     queryList.push(term);
-    //gtmn.cout("adding("+gtmn._queries.length+"): "+term);
+    //gtmn.console.log ("adding("+gtmn._queries.length+"): "+term);
 
     return true;
   }
@@ -637,7 +645,7 @@ TRACKMENOT.TMNSearch = function() {
     var feedObject = {};
     feedObject.name = feedTitles[0].firstChild.nodeValue;
     feedObject.words = [];
-    //cout('ADD RSS title : '+ feedTitles[0].firstChild.nodeValue);
+    //console.log ('ADD RSS title : '+ feedTitles[0].firstChild.nodeValue);
     for (var i=1; i<feedTitles.length; i++){
       if ( feedTitles[i].firstChild ) {
         rssTitles = feedTitles[i].firstChild.nodeValue;
@@ -646,7 +654,7 @@ TRACKMENOT.TMNSearch = function() {
       var queryToAdd = filterKeyWords(rssTitles,  feedUrl);
       addQuery(queryToAdd,feedObject.words);
     }
-    //cout(feedObject.name + " : " + feedObject.words)
+    //console.log (feedObject.name + " : " + feedObject.words)
 
     if (useRss) {
       TMNQueries.rss.push(feedObject);
@@ -685,14 +693,14 @@ TRACKMENOT.TMNSearch = function() {
       req.onreadystatechange = function(){
         if (req.readyState == 4) {
           if (req.status == 200) {
-            cout(req.responseText);
+            debug (req.responseText);
             var adds = addRssTitles(req.responseXML, feedUrl);
           }
         }
       };
       req.send(null);
     } catch (ex) {
-      cout(
+      console.log (
         "[WARN]  doRssFetch("+
         feedUrl+
         ")\n"+
@@ -807,7 +815,6 @@ TRACKMENOT.TMNSearch = function() {
 
   function sendQuery(queryToSend)  {
     tmn_scheduledSearch = false;
-    cout("Engin: "+engine);
     var url =  getEngineById(engine).urlmap;
     var isIncr = (queryToSend === null);
     if (queryToSend === null){
@@ -815,7 +822,7 @@ TRACKMENOT.TMNSearch = function() {
         queryToSend = incQueries.pop();
       else  {
         if (!queryToSend)
-          cout('sendQuery error! queryToSendis null');
+          console.log ('sendQuery error! queryToSendis null');
         return;
       }
     }
@@ -842,7 +849,7 @@ TRACKMENOT.TMNSearch = function() {
       }
     } else {
       var queryURL = queryToURL(url ,queryToSend);
-      cout("The encoded URL is " + queryURL);
+      debug ("The encoded URL is " + queryURL);
       var xhr = new XMLHttpRequest();
       xhr.open("GET", queryURL, true);
       xhr.onreadystatechange = function() {
@@ -892,7 +899,7 @@ TRACKMENOT.TMNSearch = function() {
     var pauseAfterError = Math.max(2*tmn_timeout, 60000);
     tmn_mode = 'recovery';
     burstCount=0;
-    cout("[INFO] Trying again in "+(pauseAfterError/1000)+ "s");
+    console.log ("[INFO] Trying again in "+(pauseAfterError/1000)+ "s");
     log({
       'type' : 'ERROR' ,
       'message': 'next search in '+(pauseAfterError/1000)+ "s",
@@ -943,7 +950,7 @@ TRACKMENOT.TMNSearch = function() {
   function enterBurst ( burst_engine ) {
     if (!burstEnabled)
       return;
-    cout("Entering burst mode for engine: " + burst_engine);
+    console.log ("Entering burst mode for engine: " + burst_engine);
       var logMessage = {
         type:'info',
         message:'User made a search, start burst',
@@ -966,9 +973,8 @@ TRACKMENOT.TMNSearch = function() {
     //ss.storage.kw_black_list = kwBlackList.join(",");
     var options = getOptions();
     localStorage.options_tmn = JSON.stringify(options);
-    localStorage.tmn_id =  tmn_id;
+    localStorage.tmn_id = tmn_id;
     localStorage.gen_queries = JSON.stringify(TMNQueries);
-
   }
 
   function getOptions() {
@@ -985,7 +991,7 @@ TRACKMENOT.TMNSearch = function() {
     options.saveLogs= saveLogs;
     options.disableLogs = disableLogs;
     options.useRss = useRss;
-    options.userList = userList;
+    options.userList = userList.join(",");
     options.useUserList = useUserList;
     return options;
   }
@@ -1007,7 +1013,7 @@ TRACKMENOT.TMNSearch = function() {
   function restoreOptions () {
     if (!localStorage.options_tmn) {
       initOptions();
-      cout("Init: "+ enabled);
+      console.log ("Init: "+ enabled);
       return;
     }
 
@@ -1030,11 +1036,13 @@ TRACKMENOT.TMNSearch = function() {
       options.useUserList = options.useUserList;
       options.userList = options.userList.split(",");
       tmnLogs =  JSON.parse( localStorage.logs_tmn );
-      engines = JSON.parse( localStorage.engines);
-      if (options.kw_black_list && opions.kw_black_list.length > 0)
+      engines = JSON.parse( localStorage.engines );
+      if (options.kw_black_list && opions.kw_black_list.length > 0) {
         kwBlackList = options.kw_black_list.split(",");
+      }
     } catch (ex) {
-      cout('No option recorded: '+ex);
+      console.trace(ex);
+      console.log ('No option recorded: '+ex);
     }
   }
 
@@ -1068,7 +1076,7 @@ TRACKMENOT.TMNSearch = function() {
   function preserveTMNTab() {
     if ( useTab && enabled) {
       tmn_tab = null;
-      cout('TMN tab has been deleted by the user, reload it');
+      console.log ('TMN tab has been deleted by the user, reload it');
       createTab();
       return;
     }
@@ -1093,7 +1101,7 @@ TRACKMENOT.TMNSearch = function() {
       }
     }
     catch(ex){
-      cout("[ERROR] "+ ex +" / "+ ex.message +  "\nlogging msg");
+      console.log ("[ERROR] "+ ex +" / "+ ex.message +  "\nlogging msg");
     }
     tmnLogs.unshift(entry);
     chrome.storage.local.set({"logs_tmn":JSON.stringify(tmnLogs)});
@@ -1101,7 +1109,7 @@ TRACKMENOT.TMNSearch = function() {
 
   function sendClickEvent() {
     if ( prev_engine  ) {
-      cout("About to click on " + prev_engine);
+      console.log ("About to click on " + prev_engine);
       chrome.tabs.sendMessage(tmn_tab_id,{tmn_engine:getEngineById(prev_engine)});
     }
   }
@@ -1109,7 +1117,7 @@ TRACKMENOT.TMNSearch = function() {
   function handleRequest(request, sender, sendResponse) {
 
     if (request.tmnLog) {
-      cout("Background logging : " + request.tmnLog);
+      console.log ("Background logging : " + request.tmnLog);
       var logtext = JSON.parse(request.tmnLog);
       log(logtext);
       sendResponse({});
@@ -1121,7 +1129,7 @@ TRACKMENOT.TMNSearch = function() {
       return;
     }
     /*if (request.userSearch) {
-      cout("Detected User search")
+      console.log ("Detected User search")
       enterBurst(request.userSearch);
       sendResponse({});
       return;
@@ -1135,7 +1143,7 @@ TRACKMENOT.TMNSearch = function() {
       return;
     }
     if ( request.setURLMap) {
-      cout("Background handling : " + request.setURLMap);
+      console.log ("Background handling : " + request.setURLMap);
       var vars = request.setURLMap.split('--');
       var eng = vars[0];
       var asearch = vars[1];
@@ -1150,7 +1158,7 @@ TRACKMENOT.TMNSearch = function() {
       sendResponse({});
       return;
     }
-    //cout("Background page received message: " + request.tmn);
+    //console.log ("Background page received message: " + request.tmn);
     switch (request.tmn) {
       case "currentURL":
         sendResponse({
@@ -1184,7 +1192,7 @@ TRACKMENOT.TMNSearch = function() {
         break;
       case "isActiveTab":
         var active = (!sender.tab || sender.tab.id==tmn_tab_id);
-        cout("active: "+ active);
+        console.log ("active: "+ active);
           sendResponse(
             {"isActive": active}
           );
@@ -1238,12 +1246,18 @@ TRACKMENOT.TMNSearch = function() {
         stop_when = "end";
       }
 
+      if (useRss) {
         typeoffeeds.push('rss');
-      TMNQueries.rss = [];
-      var feeds = feedList.split('|');
-      if ( useRss ) {
+        TMNQueries.rss = [];
+
+        var feeds = feedList.split('|');
         for (var i=0;i<feeds.length;i++)
           doRssFetch(feeds[i]);
+      }
+
+      if (useUserList) {
+        typeoffeeds.push('userlist');
+        TMNQueries.userlist = userList.split(",");
       }
 
       if ( useDHSList ) {
@@ -1332,7 +1346,7 @@ TRACKMENOT.TMNSearch = function() {
 
     _hideTMNTab : function(tab_id) {
       if (tab_id == tmn_tab_id ) {
-        cout('TMN tab has been selected by the user, hidding it');
+        console.log ('TMN tab has been selected by the user, hidding it');
         chrome.tabs.remove( tmn_tab_id );
         return;
       }
@@ -1341,7 +1355,7 @@ TRACKMENOT.TMNSearch = function() {
 
     _deleteTabWhenClosing : function(win_id) {
       if (useTabe && tmn_win_id == win_id ) {
-        cout('TMN win has been closed by the user, close the tab');
+        console.log ('TMN win has been closed by the user, close the tab');
         chrome.tabs.remove( tmn_tab_id );
         return;
       }
@@ -1351,7 +1365,7 @@ TRACKMENOT.TMNSearch = function() {
     _preserveTMNTab : function(tab_id) {
       if (tab_id == tmn_tab_id && useTab ) {
         tmn_tab_id = -1;
-        cout('TMN tab has been deleted by the user, reload it');
+        console.log ('TMN tab has been deleted by the user, reload it');
         createTab();
         return;
       }

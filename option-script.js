@@ -19,7 +19,6 @@ function loadHandlers() {
 
   $("#trackmenot-opt-showqueries").click(  TMNShowQueries);
 
-
   $("#validate-feed").click( function() {
     var feeds = $("#trackmenot-seed").val();
     var param = {"feeds": feeds};
@@ -56,7 +55,6 @@ function loadHandlers() {
   );
 }
 
-
 function TMNSetOptionsMenu( ) {
   var options = tmn._getOptions();
   var feedList = options.feedList;
@@ -84,16 +82,10 @@ function TMNSetOptionsMenu( ) {
   setFrequencyMenu(options.timeout);
 }
 
-
-
-
-
 function setFrequencyMenu(timeout){
   var menu = $("#trackmenot-opt-timeout");
   $('#trackmenot-opt-timeout option[value=' +timeout+ ']').prop('selected', true);
 }
-
-
 
 function TMNClearLogs() {
   tmn._clearLogs();
