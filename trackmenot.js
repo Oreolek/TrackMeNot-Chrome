@@ -31,6 +31,9 @@ TRACKMENOT.TMNSearch = function() {
     var incQueries = [];
     var searchEngines = "google";
     var engine = 'google';
+    var useRss = true;
+    var useUserList = false;
+    var userList = [];
     var TMNQueries = {};
     var branch =  "extensions.trackmenot.";
     var feedList = 'http://www.techmeme.com/index.xml|http://rss.slashdot.org/Slashdot/slashdot|http://feeds.nytimes.com/nyt/rss/HomePage';
@@ -483,7 +486,7 @@ TRACKMENOT.TMNSearch = function() {
 
   function validateFeeds(param) {
     TMNQueries.rss = [];
-    feedList= param.feeds;
+    feedList = param.feeds;
     cout("Validating the feeds: "+ feedList);
     var feeds = feedList.split('|');
     for (var i=0;i<feeds.length;i++) {
@@ -560,7 +563,7 @@ TRACKMENOT.TMNSearch = function() {
     if (
       !term ||
       (term.length<3) ||
-      (queryList.indexOf(term) > 0) 
+      (queryList.indexOf(term) > 0)
     )
       return false;
 
@@ -644,7 +647,10 @@ TRACKMENOT.TMNSearch = function() {
       addQuery(queryToAdd,feedObject.words);
     }
     //cout(feedObject.name + " : " + feedObject.words)
-    TMNQueries.rss.push(feedObject);
+
+    if (useRss) {
+      TMNQueries.rss.push(feedObject);
+    }
 
     return 1;
   }
@@ -978,6 +984,9 @@ TRACKMENOT.TMNSearch = function() {
     options.kw_black_list = kwBlackList.join(",");
     options.saveLogs= saveLogs;
     options.disableLogs = disableLogs;
+    options.useRss = useRss;
+    options.userList = userList;
+    options.useUserList = useUserList;
     return options;
   }
 
@@ -989,6 +998,7 @@ TRACKMENOT.TMNSearch = function() {
     useTab = false;
     useBlackList = true;
     useDHSList = false;
+    useRss = true;
     kwBlackList= ['bomb', 'porn', 'pornographie'];
     saveLogs =  true;
     disableLogs  = false;
@@ -1016,9 +1026,13 @@ TRACKMENOT.TMNSearch = function() {
       TMNQueries = JSON.parse(localStorage.gen_queries);
       feedList = options.feedList;
       tmn_id = options.tmn_id;
+      useRss = options.useRss;
+      options.useUserList = options.useUserList;
+      options.userList = options.userList.split(",");
       tmnLogs =  JSON.parse( localStorage.logs_tmn );
       engines = JSON.parse( localStorage.engines);
-      if (options.kw_black_list && opions.kw_black_list.length > 0)  kwBlackList = options.kw_black_list.split(",");
+      if (options.kw_black_list && opions.kw_black_list.length > 0)
+        kwBlackList = options.kw_black_list.split(",");
     } catch (ex) {
       cout('No option recorded: '+ex);
     }
@@ -1227,8 +1241,10 @@ TRACKMENOT.TMNSearch = function() {
         typeoffeeds.push('rss');
       TMNQueries.rss = [];
       var feeds = feedList.split('|');
-      for (var i=0;i<feeds.length;i++)
-        doRssFetch(feeds[i]);
+      if ( useRss ) {
+        for (var i=0;i<feeds.length;i++)
+          doRssFetch(feeds[i]);
+      }
 
       if ( useDHSList ) {
         readDHSList();

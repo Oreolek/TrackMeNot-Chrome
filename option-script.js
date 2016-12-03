@@ -68,9 +68,12 @@ function TMNSetOptionsMenu( ) {
   $("#trackmenot-opt-burstMode").prop('checked',options.burstMode);
   $("#trackmenot-opt-save-logs").prop('checked',options.saveLogs);
   $("#trackmenot-opt-disable-logs").prop('checked',options.disableLogs);
+  $("#trackmenot-opt-userss").prop('checked',options.useRss);
+  $("#trackmenot-use-userlist").prop('checked',options.useUserList);
 
   $("#trackmenot-seed").val(feedList);
   $("#trackmenot-blacklist").val(kw_black_list);
+  $("#trackmenot-userlist").val(options.userList);
   $("#trackmenot-use-blacklist").prop('checked', options.use_black_list);
   $("#trackmenot-use-dhslist").prop('checked', options.use_dhs_list);
 
@@ -206,11 +209,14 @@ function saveOptions() {
   var options = {};
   options.enabled =  $("#trackmenot-opt-enabled").is(':checked');
 
-  console.log("Saved Enabled: "+options.enabled );
-    options.useTab = $("#trackmenot-opt-useTab").is(':checked');
+  options.useTab = $("#trackmenot-opt-useTab").is(':checked');
   options.burstMode = $("#trackmenot-opt-burstMode").is(':checked');
   options.disableLogs = $("#trackmenot-opt-disable-logs").is(':checked');
+  options.useRss = $("#trackmenot-opt-userss").is(':checked');
+  options.useUserList = $("#trackmenot-use-userlist").is(':checked');
   options.saveLogs = $("#trackmenot-opt-save-logs").is(':checked');
+
+  options.userList = $("#trackmenot-userlist").val();
   options.timeout = $("#trackmenot-opt-timeout").val();
   setFrequencyMenu(options.timeout);
 

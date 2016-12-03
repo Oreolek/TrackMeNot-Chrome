@@ -11,11 +11,10 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+  along with TrackMeNot.  If not, see <http://www.gnu.org/licenses/>.
  ********************************************************************************/
 
 if(!TRACKMENOT) var TRACKMENOT = {};
-
 
 TRACKMENOT.TMNInjected = function() {
   var debug_script = true;
@@ -277,8 +276,6 @@ TRACKMENOT.TMNInjected = function() {
     },timers[2]);
   }
 
-
-
   function getElementsByAttrValue(dom,nodeType,attrName,nodeValue) {
     var outlines = dom.getElementsByTagName(nodeType);
     for (var i = 0; i<outlines.length;i++) {
@@ -288,14 +285,9 @@ TRACKMENOT.TMNInjected = function() {
     return null;
   }
 
-
-
-
   function getElement(doc,aID){
     return (doc.getElementById) ? doc.getElementById(aID): doc.all[aID];
   }
-
-
 
   function getQuerySuggestion() {
     var suggestFilter =  suggest_filters[engine];
@@ -315,18 +307,17 @@ TRACKMENOT.TMNInjected = function() {
     return suggestElts.slice();
   }
 
-
   function getCommonWords(searchValue, nextQuery) {
     var searched = searchValue.split(' ');
     var tosearch = nextQuery.split(' ');
     var result =  [];
     result = result.concat(
-        searched.filter(
-          function(x) {
-            return (tosearch.indexOf(x) >= 0);
-          }
-          )
-        );
+      searched.filter(
+        function(x) {
+          return (tosearch.indexOf(x) >= 0);
+        }
+      )
+    );
     return result;
   }
 
