@@ -154,20 +154,26 @@ TRACKMENOT.editor = function () {
 
   function getObjectByID( id, father ) {
     var result = null;
-    for each(var elt in father.children ) {
-      if (elt.id == id) result = elt;
-      else result = getObjectByID( id,elt);
-      if( result !== null) return result;
+    for ( let elt of father.children ) {
+      if (elt.id === id)
+        result = elt;
+      else
+        result = getObjectByID( id,elt );
+      if( result !== null)
+        return result;
     }
     return result;
   }
 
   function getFatherByID( id, father ) {
     var result = null;
-    for each(var elt in father.children ) {
-      if (elt.id === id) result = father;
-      else result = getFatherByID( id,elt);
-      if( result !== null) return result;
+    for (let elt of father.children ) {
+      if (elt.id === id)
+        result = father;
+      else
+        result = getFatherByID( id,elt);
+      if ( result !== null)
+        return result;
     }
     return result;
   }
@@ -243,17 +249,17 @@ TRACKMENOT.editor = function () {
     },
 
     _addEntry : function () {
-      var entry  =  document.getElementById('text-entry').value;
+      let entry  =  document.getElementById('text-entry').value;
       switch (tree_state)  {
         case 'root' :
           rss_obj.children.push(newCategory(entry,'category'));
           break;
         case 'category':
-          var cat = getObjectByID(tree_item,rss_obj);
+          let cat = getObjectByID(tree_item,rss_obj);
           cat.children.push(newRSS(entry));
           break;
         case 'rss':
-          var cat = getObjectByID(tree_item,rss_obj);
+          let cat = getObjectByID(tree_item,rss_obj);
           cat.children.push(newRSS(entry));
           break;
         default :
@@ -265,7 +271,7 @@ TRACKMENOT.editor = function () {
     },
 
     _getObjByType: function( obj, type, result) {
-      for each(var elt in obj.children ) {
+      for (let elt of obj.children ) {
         if (elt.type == type) result.push(elt);
         TRACKMENOT.editor._getObjByType( elt, type, result);
       }

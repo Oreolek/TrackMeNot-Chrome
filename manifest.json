@@ -10,7 +10,7 @@
   },
   "applications": {
     "gecko": {
-      "id": "trackmenot@mrl.nyu.edu",
+      "id": "trackmenot-fork@mrl.nyu.edu",
       "strict_min_version": "42.0"
     }
   },
