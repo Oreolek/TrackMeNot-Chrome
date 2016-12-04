@@ -138,8 +138,19 @@ function TMNShowEngines(engines) {
 
 function TMNShowQueries() {
   let sources = tmn._getAllQueries();
-  let htmlStr =  '<a href="#dhs">DHS</a> | <a href="#rss"> RSS </a> | <a href="#popular"> Popular </a>|<a href="#extracted"> Extracted</a>';
+  let htmlStr =  '<a href="#userlist">Userlist</a> | <a href="#dhs">DHS</a> | <a href="#rss"> RSS </a> | <a href="#popular"> Popular </a>|<a href="#extracted"> Extracted</a>';
   htmlStr += '<div style="height:1000px;overflow:auto;"><table witdh=500 cellspacing=3 bgcolor=white  frame=border>';
+  if ( sources.userlist ) {
+    htmlStr += '<tr style="color:Black"  bgcolor=#D6E0E0 align=center>';
+    htmlStr += '<td > User list <td>';
+    htmlStr += '<a name="userlist"></a>';
+    htmlStr += '</tr>';
+    for (let i=0;  i<sources.userlist.length ; i++) {
+      htmlStr += '<tr style="color:Black"  bgcolor=#F0F0F0 align=center>';
+      htmlStr += '<td>' +sources.userlist[i]+'<td>';
+      htmlStr += '</tr>';
+    }
+  }
   if ( sources.dhs ) {
     htmlStr += '<tr style="color:Black"  bgcolor=#D6E0E0 align=center>';
     htmlStr += '<td > DHS Monitored <td>';

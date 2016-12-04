@@ -1249,8 +1249,6 @@ TRACKMENOT.TMNSearch = function() {
     startTMN : function () {
       restoreOptions();
       //browser.browserAction.setPopup("tmn_menu.html");
-      typeoffeeds.push('zeitgeist');
-      TMNQueries.zeitgeist = zeitgeist;
 
       if (TMNQueries.extracted && TMNQueries.extracted.length >0) {
         typeoffeeds.push('extracted');
@@ -1271,7 +1269,10 @@ TRACKMENOT.TMNSearch = function() {
           doRssFetch(feeds[i]);
       }
 
-      if (useUserList) {
+      if (!useUserList) {
+        typeoffeeds.push('zeitgeist');
+        TMNQueries.zeitgeist = zeitgeist;
+      } else {
         // populate userlist from the file — synchronous request
         var xhr = new XMLHttpRequest();
         xhr.open("GET", browser.extension.getURL("tmn_wordlist.txt"), false);
