@@ -1,6 +1,6 @@
-var tmn_options ={};
-var tmn = browser.extension.getBackgroundPage().TRACKMENOT.TMNSearch;
-var options = null;
+let tmn_options ={};
+let tmn = browser.extension.getBackgroundPage().TRACKMENOT.TMNSearch;
+let options = null;
 
 function loadHandlers() {
   $("#apply-options").click( function() {
@@ -24,8 +24,8 @@ function loadHandlers() {
   $("#trackmenot-opt-showqueries").click(  TMNShowQueries);
 
   $("#validate-feed").click( function() {
-    var feeds = $("#trackmenot-seed").val();
-    var param = {"feeds": feeds};
+    let feeds = $("#trackmenot-seed").val();
+    let param = {"feeds": feeds};
     browser.runtime.sendMessage({'tmn':"TMNValideFeeds",'param':param});
   }
   );
@@ -33,7 +33,7 @@ function loadHandlers() {
   $("#clear-log").click( TMNClearLogs	);
 
   $("#search-engine-list").on('click', 'button.smallbutton', function(event) {
-    var del_engine = event.target.id.split("_").pop();
+    let del_engine = event.target.id.split("_").pop();
     browser.runtime.sendMessage({'tmn':"TMNDelEngine",'engine':del_engine});
   });
 
@@ -47,7 +47,7 @@ function loadHandlers() {
 
 
   $("#add-engine").click( function() {
-    var engine = {};
+    let engine = {};
     engine.name = $("#newengine-name").val();
     engine.urlmap = $("#newengine-map").val();
     if(engine.urlmap.indexOf('trackmenot') <0 ) {
@@ -59,10 +59,10 @@ function loadHandlers() {
 }
 
 function TMNSetOptionsMenu( options ) {
-  var default_options = tmn._getOptions();
+  let default_options = tmn._getOptions();
   options = $.extend({}, default_options, options);
-  var feedList = options.feedList;
-  var kw_black_list = options.kw_black_list;
+  let feedList = options.feedList;
+  let kw_black_list = options.kw_black_list;
   $("#add-engine-table").hide();
   $("#trackmenot-opt-enabled").prop('checked', options.enabled);
   $("#trackmenot-opt-useTab").prop('checked',options.useTab);
@@ -74,19 +74,18 @@ function TMNSetOptionsMenu( options ) {
 
   $("#trackmenot-seed").val(feedList);
   $("#trackmenot-blacklist").val(kw_black_list);
-  $("#trackmenot-userlist").val(options.userList);
   $("#trackmenot-use-blacklist").prop('checked', options.use_black_list);
   $("#trackmenot-use-dhslist").prop('checked', options.use_dhs_list);
 
-  var engines = options.searchEngines.split(',');
-  for( var i=0; i< engines.length;i++)
+  let engines = options.searchEngines.split(',');
+  for( let i=0; i< engines.length;i++)
     $("#"+engines[i]).prop('checked',true);
 
   setFrequencyMenu(options.timeout);
 }
 
 function setFrequencyMenu(timeout){
-  var menu = $("#trackmenot-opt-timeout");
+  let menu = $("#trackmenot-opt-timeout");
   $('#trackmenot-opt-timeout option[value=' +timeout+ ']').prop('selected', true);
 }
 
@@ -96,8 +95,8 @@ function TMNClearLogs() {
 }
 
 function TMNShowLog() {
-  var logs = tmn._getLogs();
-  var htmlStr = '<table witdh=500 cellspacing=3 bgcolor=white  frame=border>';
+  let logs = tmn._getLogs();
+  let htmlStr = '<table witdh=500 cellspacing=3 bgcolor=white  frame=border>';
   htmlStr += '<thead><tr align=left>';
   htmlStr += '<th>Engine</th>';
   htmlStr += '<th>Mode</th>';
@@ -105,7 +104,7 @@ function TMNShowLog() {
   htmlStr += '<th>Query/Message</th>';
   htmlStr += '<th>Date</th>';
   htmlStr += '</tr></thead>';
-  for (var i=0; i< 3000 && i<logs.length ; i++) {
+  for (let i=0; i< 3000 && i<logs.length ; i++) {
     htmlStr += '<tr ';
     if (logs[i].type == 'ERROR') htmlStr += 'style="color:Red">';
     if (logs[i].type == 'query') htmlStr += 'style="color:Black">';
@@ -126,9 +125,9 @@ function TMNShowLog() {
 
 
 function TMNShowEngines(engines) {
-  var htmlStr = "<table>";
-  for (var i=0;  i<engines.length ; i++) {
-    var engine = engines[i];
+  let htmlStr = "<table>";
+  for (let i=0;  i<engines.length ; i++) {
+    let engine = engines[i];
     htmlStr += '<tr >';
     htmlStr += '<td><input type="checkbox"  id="'+ engine.id +'" value="'+engine.id +'">'+ engine.name +'</td><td><button class="smallbutton" id="del_engine_'+engine.id+'" > - </button> </td>';
     htmlStr += '</tr>';
@@ -138,19 +137,19 @@ function TMNShowEngines(engines) {
 }
 
 function TMNShowQueries() {
-  var sources = tmn._getAllQueries();
-  var htmlStr =  '<a href="#dhs">DHS</a> | <a href="#rss"> RSS </a> | <a href="#popular"> Popular </a>|<a href="#extracted"> Extracted</a>';
+  let sources = tmn._getAllQueries();
+  let htmlStr =  '<a href="#dhs">DHS</a> | <a href="#rss"> RSS </a> | <a href="#popular"> Popular </a>|<a href="#extracted"> Extracted</a>';
   htmlStr += '<div style="height:1000px;overflow:auto;"><table witdh=500 cellspacing=3 bgcolor=white  frame=border>';
   if ( sources.dhs ) {
     htmlStr += '<tr style="color:Black"  bgcolor=#D6E0E0 align=center>';
     htmlStr += '<td > DHS Monitored <td>';
     htmlStr += '<a name="dhs"></a>';
     htmlStr += '</tr>';
-    for (var i=0;  i<sources.dhs.length ; i++) {
+    for (let i=0;  i<sources.dhs.length ; i++) {
       htmlStr += '<tr style="color:Black"  bgcolor=#F0F0F0 align=center>';
       htmlStr += '<td>' +sources.dhs[i].category_name+ '<td>';
       htmlStr += '</tr>';
-      for (var j=0;  j< sources.dhs[i].words.length ; j++) {
+      for (let j=0;  j< sources.dhs[i].words.length ; j++) {
         htmlStr += '<tr style="color:Black">';
         htmlStr += '<td>' +sources.dhs[i].words[j]+ '<td>';
         htmlStr += '</tr>';
@@ -162,11 +161,11 @@ function TMNShowQueries() {
     htmlStr += '<td > RSS <td>';
     htmlStr += '<a name="rss"></a>';
     htmlStr += '</tr>';
-    for (var i=0;  i < sources.rss.length ; i++) {
+    for (let i=0;  i < sources.rss.length ; i++) {
       htmlStr += '<tr style="color:Black"  bgcolor=#F0F0F0 align=center>';
       htmlStr += '<td>' +sources.rss[i].name+ '<td>';
       htmlStr += '</tr>';
-      for (var j=0;  j< sources.rss[i].words.length ; j++) {
+      for (let j=0;  j< sources.rss[i].words.length ; j++) {
         htmlStr += '<tr style="color:Black">';
         htmlStr += '<td>' +sources.rss[i].words[j]+ '<td>';
         htmlStr += '</tr>';
@@ -178,7 +177,7 @@ function TMNShowQueries() {
     htmlStr += '<td > Popular <td>';
     htmlStr += '<a name="popular"></a>';
     htmlStr += '</tr>';
-    for (var i=0;  i< sources.zeitgeist.length ; i++) {
+    for (let i=0;  i< sources.zeitgeist.length ; i++) {
       htmlStr += '<tr style="color:Black">';
       htmlStr += '<td>' +sources.zeitgeist[i]+ '<td>';
       htmlStr += '</tr>';
@@ -189,7 +188,7 @@ function TMNShowQueries() {
     htmlStr += '<td > Extracted <td>';
     htmlStr += '<a name="extracted"></a>';
     htmlStr += '</tr>';
-    for (var i=0; i<sources.extracted.length ; i++) {
+    for (let i=0; i<sources.extracted.length ; i++) {
       htmlStr += '<tr style="color:Black"  bgcolor=#F0F0F0 align=center>';
       htmlStr += '<td>' +sources.extracted[i]+ '<td>';
       htmlStr += '</tr>';
@@ -201,7 +200,7 @@ function TMNShowQueries() {
 
 
 function saveOptions() {
-  var options = {};
+  let options = {};
   options.enabled =  $("#trackmenot-opt-enabled").is(':checked');
 
   options.useTab = $("#trackmenot-opt-useTab").is(':checked');
@@ -211,12 +210,23 @@ function saveOptions() {
   options.useUserList = $("#trackmenot-use-userlist").is(':checked');
   options.saveLogs = $("#trackmenot-opt-save-logs").is(':checked');
 
-  options.userList = $("#trackmenot-userlist").val();
   options.timeout = $("#trackmenot-opt-timeout").val();
+
+  let file = $('#trackmenot-userlist').get(0).files[0];
+  if (file) {
+    let reader = new FileReader();
+    let userlist = "";
+    reader.onload = function(e) {
+      userlist = reader.result;
+      options.userList = userlist.split("\n");
+    }
+    reader.readAsText(file);
+  }
+
   setFrequencyMenu(options.timeout);
 
-  var engines = '';
-  var list = $("#search-engine-list:checked");
+  let engines = '';
+  let list = $("#search-engine-list:checked");
   $("#search-engine-list :checked").each(
     function(){
       engines += ($(this).val())+",";
@@ -228,8 +238,8 @@ function saveOptions() {
   options.searchEngines = engines;
   options.feedList = $("#trackmenot-seed").val();
   options.use_black_list =  $("#trackmenot-use-blacklist").is(':checked');
-  options.use_dhs_list =    $("#trackmenot-use-dhslist").is(':checked');
-  options.kw_black_list =  $("#trackmenot-blacklist").val();
+  options.use_dhs_list = $("#trackmenot-use-dhslist").is(':checked');
+  options.kw_black_list = $("#trackmenot-blacklist").val();
   return options;
 }
 
