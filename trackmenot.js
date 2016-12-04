@@ -214,6 +214,7 @@ TRACKMENOT.TMNSearch = function() {
     sendMessageToPanelScript("TMNSendOption",panel_inputs);
     tmn_panel.port.on("TMNOpenOption",openOptionWindow);
     tmn_panel.port.on("TMNSaveOptions",saveOptionFromTab);
+    tmn_panel.port.on("TMNSaveUserlist",saveUserlist);
   }
 
   function openOptionWindow() {
@@ -261,6 +262,8 @@ TRACKMENOT.TMNSearch = function() {
     disableLogs = options.disableLogs;
     saveLogs = options.saveLogs;
     useBlackList = options.use_black_list;
+    useRss = options.useRss;
+    useUserList = options.useUserList;
     if ( useDHSList!= options.use_dhs_list) {
       if ( options.use_dhs_list ) {
         readDHSList();
@@ -1040,7 +1043,6 @@ TRACKMENOT.TMNSearch = function() {
       feedList = options.feedList;
       tmn_id = options.tmn_id;
       useRss = options.useRss;
-      useUserList = options.useUserList;
       if (browser.storage.local.get("gen_queries") != "") {
         TMNQueries = JSON.parse(browser.storage.local.get("gen_queries"));
       }
@@ -1096,6 +1098,10 @@ TRACKMENOT.TMNSearch = function() {
   function formatNum ( val) {
     if (val < 10) return '0'+val;
     return val;
+  }
+
+  function saveUserlist (list) {
+    TMNQueries.userlist = list;
   }
 
   function log (entry) {
@@ -1217,6 +1223,10 @@ TRACKMENOT.TMNSearch = function() {
         saveOptionFromTab(request.option);
         sendResponse({});
         break;
+      case "TMNSaveUserlist":
+        saveUserlist(request.option);
+        sendResponse({});
+        break;
       case "TMNResetOptions":
         resetOptions();
         sendResponse({});
@@ -1273,20 +1283,7 @@ TRACKMENOT.TMNSearch = function() {
         typeoffeeds.push('zeitgeist');
         TMNQueries.zeitgeist = zeitgeist;
       } else {
-        // populate userlist from the file — synchronous request
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", browser.extension.getURL("tmn_wordlist.txt"), false);
-        xhr.onreadystatechange = function() {
-          if (xhr.readyState == 4) {
-            clearTimeout(tmn_errTimeout);
-            if (xhr.status >= 200 && xhr.status < 400 ) {
-              typeoffeeds.push('userlist');
-              let list = xhr.responseText;
-              TMNQueries.userlist = list.split("\n");
-            } else {
-            }
-          }
-        };
+        typeoffeeds.push('userlist');
       }
 
       if ( useDHSList ) {

@@ -58,6 +58,7 @@ function loadHandlers() {
   });
 }
 
+// Update controls based on saved options
 function TMNSetOptionsMenu( options ) {
   let default_options = tmn._getOptions();
   options = $.extend({}, default_options, options);
@@ -122,7 +123,6 @@ function TMNShowLog() {
   htmlStr += '</table>';
   $('#tmn_logs_container').html(htmlStr);
 }
-
 
 function TMNShowEngines(engines) {
   let htmlStr = "<table>";
@@ -209,7 +209,14 @@ function TMNShowQueries() {
   $('#tmn_logs_container').html(htmlStr);
 }
 
+// ES6 function to remove duplicates.
+function remove_duplicates_es6(arr) {
+  let s = new Set(arr);
+  let it = s.values();
+  return Array.from(it);
+}
 
+// Make an options object and return it. Does not actually save anything.
 function saveOptions() {
   let options = {};
   options.enabled =  $("#trackmenot-opt-enabled").is(':checked');
@@ -229,7 +236,15 @@ function saveOptions() {
     let userlist = "";
     reader.onload = function(e) {
       userlist = reader.result;
-      options.userList = userlist.split("\n");
+      let words = userlist.split("\n");
+      words = remove_duplicates_es6(words);
+      words = words.filter(function(elem, pos) {
+        return (elem !== "");
+      });
+      browser.runtime.sendMessage({
+        'tmn':"TMNSaveUserlist",
+        'option':words,
+      });
     }
     reader.readAsText(file);
   }
