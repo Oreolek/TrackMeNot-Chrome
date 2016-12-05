@@ -140,6 +140,8 @@ function TMNShowQueries() {
   let sources = tmn._getAllQueries();
   let htmlStr =  '<a href="#userlist">Userlist</a> | <a href="#dhs">DHS</a> | <a href="#rss"> RSS </a> | <a href="#popular"> Popular </a>|<a href="#extracted"> Extracted</a>';
   htmlStr += '<div style="height:1000px;overflow:auto;"><table witdh=500 cellspacing=3 bgcolor=white  frame=border>';
+  let default_options = tmn._getOptions();
+
   if ( sources.userlist ) {
     htmlStr += '<tr style="color:Black"  bgcolor=#D6E0E0 align=center>';
     htmlStr += '<td > User list <td>';
@@ -167,7 +169,7 @@ function TMNShowQueries() {
       }
     }
   }
-  if ( sources.rss ) {
+  if ( default_options.useRss && sources.rss ) {
     htmlStr += '<tr style="color:Black"  bgcolor=#D6E0E0 align=center>';
     htmlStr += '<td > RSS <td>';
     htmlStr += '<a name="rss"></a>';

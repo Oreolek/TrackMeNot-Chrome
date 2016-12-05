@@ -247,15 +247,6 @@ TRACKMENOT.TMNSearch = function() {
   }
 
   function saveOptionFromTab(options) {
-    if( enabled !== options.enabled) {
-      if (options.enabled)
-      {
-        restartTMN();
-      } else {
-        stopTMN();
-      }
-    }
-    debug("useTab: " + options.useTab);
     tmn_timeout = options.timeout;
     searchEngines = options.searchEngines;
     burstEnabled = options.burstMode;
@@ -264,21 +255,19 @@ TRACKMENOT.TMNSearch = function() {
     useBlackList = options.use_black_list;
     useRss = options.useRss;
     useUserList = options.useUserList;
-    if ( useDHSList!= options.use_dhs_list) {
-      if ( options.use_dhs_list ) {
-        readDHSList();
-        typeoffeeds.push('dhs');
-      } else {
-        typeoffeeds.splice(typeoffeeds.indexOf('dhs'),1);
-        TMNQueries.dhs = null;
-      }
-      useDHSList = options.use_dhs_list;
-    }
+    useDHSList = options.use_dhs_list;
 
     kwBlackList = options.kw_black_list.split(',');
     debug("Searched engines: "+ searchEngines);
     changeTabStatus(options.useTab);
     saveOptions();
+    if (options.enabled)
+    {
+      restartTMN();
+    } else {
+      stopTMN();
+    }
+    debug("useTab: " + options.useTab);
   }
 
   function changeTabStatus(useT) {
@@ -376,7 +365,7 @@ TRACKMENOT.TMNSearch = function() {
   }
 
   function trim(s)  {
-    if (s !== null) {
+    if (s !== undefined) {
       return s.replace(/\n/g,'');
     }
     return s;
@@ -485,13 +474,12 @@ TRACKMENOT.TMNSearch = function() {
     let qtype = randomElt(typeoffeeds);
     debug (qtype);
     let queries = TMNQueries[qtype];
-    if ( qtype != 'zeitgeist' && qtype != 'extracted') {
+    if ( qtype != 'zeitgeist' && qtype != 'userlist' && qtype != 'extracted') {
       queries = randomElt(queries);
       if (queries !== undefined && queries.words !== undefined) {
         queries = queries.words;
       } else {
-        // no real result to return, try again
-        return randomQuery();
+        return "";
       }
     }
     let term = trim( randomElt(queries) );
@@ -1072,6 +1060,7 @@ TRACKMENOT.TMNSearch = function() {
     browser.browserAction.setBadgeText({'text':'On'});
     browser.browserAction.setTitle({'title':'On'});
     scheduleNextSearch(4000);
+    initFeeds();
   }
 
   function stopTMN() {
@@ -1098,6 +1087,45 @@ TRACKMENOT.TMNSearch = function() {
   function formatNum ( val) {
     if (val < 10) return '0'+val;
     return val;
+  }
+
+  function initFeeds() {
+    typeoffeeds = [];
+    if (TMNQueries.extracted && TMNQueries.extracted.length >0) {
+      typeoffeeds.push('extracted');
+    }
+
+    if (!load_full_pages) {
+      stop_when = "start";
+    } else {
+      stop_when = "end";
+    }
+
+    if (useRss) {
+      typeoffeeds.push('rss');
+      TMNQueries.rss = [];
+
+      let feeds = feedList.split('|');
+      for (let i=0;i<feeds.length;i++)
+        doRssFetch(feeds[i]);
+    } else {
+      TMNQueries.rss = null;
+    }
+
+    if (!useUserList) {
+      typeoffeeds.push('zeitgeist');
+      TMNQueries.zeitgeist = zeitgeist;
+    } else {
+      typeoffeeds.push('userlist');
+      TMNQueries.zeitgeist = null;
+    }
+
+    if ( useDHSList ) {
+      readDHSList();
+      typeoffeeds.push('dhs');
+    } else {
+      TMNQueries.dhs = null;
+    }
   }
 
   function saveUserlist (list) {
@@ -1260,36 +1288,7 @@ TRACKMENOT.TMNSearch = function() {
       restoreOptions();
       //browser.browserAction.setPopup("tmn_menu.html");
 
-      if (TMNQueries.extracted && TMNQueries.extracted.length >0) {
-        typeoffeeds.push('extracted');
-      }
-
-      if (!load_full_pages) {
-        stop_when = "start";
-      } else {
-        stop_when = "end";
-      }
-
-      if (useRss) {
-        typeoffeeds.push('rss');
-        TMNQueries.rss = [];
-
-        let feeds = feedList.split('|');
-        for (let i=0;i<feeds.length;i++)
-          doRssFetch(feeds[i]);
-      }
-
-      if (!useUserList) {
-        typeoffeeds.push('zeitgeist');
-        TMNQueries.zeitgeist = zeitgeist;
-      } else {
-        typeoffeeds.push('userlist');
-      }
-
-      if ( useDHSList ) {
-        readDHSList();
-        typeoffeeds.push('dhs');
-      }
+      initFeeds();
 
       let engines = searchEngines.split(',');
       engine = chooseEngine(engines);
@@ -1335,6 +1334,10 @@ TRACKMENOT.TMNSearch = function() {
 
     _clearLogs : function() {
       clearLog();
+    },
+
+    _randomQuery : function() {
+      return randomQuery();
     },
 
     _getAllQueries : function() {
