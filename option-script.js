@@ -247,7 +247,7 @@ function saveOptions() {
         'tmn':"TMNSaveUserlist",
         'option':words,
       });
-    }
+    };
     reader.readAsText(file);
   }
 
