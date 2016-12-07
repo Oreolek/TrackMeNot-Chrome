@@ -1,5 +1,9 @@
 let tmn_options ={};
-let tmn = browser.extension.getBackgroundPage().TRACKMENOT.TMNSearch;
+let getting_tmn = browser.runtime.getBackgroundPage()
+let tmn = undefined;
+getting_tmn.then(function(page) {
+  tmn = page.TRACKMENOT.TMNSearch;
+})
 let options = null;
 
 function loadHandlers() {
@@ -12,7 +16,10 @@ function loadHandlers() {
       'option':tmn_options.options
     });
     TMNSetOptionsMenu(tmn_options.options);
-    alert("Configuration saved");
+    // saving effect
+    $("img").fadeTo(100, 0.3, function() {
+      $(this).fadeTo(500, 1.0);
+    });
   });
 
   $("#show-add").click( function() {
@@ -34,7 +41,10 @@ function loadHandlers() {
 
   $("#search-engine-list").on('click', 'button.smallbutton', function(event) {
     let del_engine = event.target.id.split("_").pop();
-    browser.runtime.sendMessage({'tmn':"TMNDelEngine",'engine':del_engine});
+    browser.runtime.sendMessage({
+      'tmn':"TMNDelEngine",
+      'engine':del_engine
+    });
   });
 
   $("#help-faq").click( function() {
@@ -79,7 +89,7 @@ function TMNSetOptionsMenu( options ) {
   $("#trackmenot-use-dhslist").prop('checked', options.use_dhs_list);
 
   let engines = options.searchEngines.split(',');
-  for( let i=0; i< engines.length;i++)
+  for( let i=0; i < engines.length;i++)
     $("#"+engines[i]).prop('checked',true);
 
   setFrequencyMenu(options.timeout);
@@ -126,7 +136,7 @@ function TMNShowLog() {
 
 function TMNShowEngines(engines) {
   let htmlStr = "<table>";
-  for (let i=0;  i<engines.length ; i++) {
+  for (let i=0; i < engines.length; i++) {
     let engine = engines[i];
     htmlStr += '<tr >';
     htmlStr += '<td><input type="checkbox"  id="'+ engine.id +'" value="'+engine.id +'">'+ engine.name +'</td><td><button class="smallbutton" id="del_engine_'+engine.id+'" > - </button> </td>';
