@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "TrackMeNot",
   "description": "TMN WebExtension portage",
-  "version": "0.10.2",
+  "version": "0.10.3",
   "background": {
     "scripts": [
       "trackmenot.js"

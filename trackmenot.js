@@ -1127,6 +1127,56 @@ TRACKMENOT.TMNSearch = function() {
     return enabled;
   }
 
+  function resetOptions() {
+    console.log("Resetting options");
+    browser.storage.local.remove([
+      "options_tmn",
+      "tmn_id",
+      "gen_queries",
+    ]);
+
+    useTab = false;
+    enabled = true;
+    load_full_pages = false;
+    last_url = "";
+    stop_when = "start";
+    useIncrementals = true;
+    incQueries = [];
+    searchEngines = "google";
+    engine = 'google';
+    useRss = true;
+    useUserList = false;
+    TMNQueries = {};
+    branch =  "extensions.trackmenot.";
+    feedList = 'http://www.techmeme.com/index.xml|http://rss.slashdot.org/Slashdot/slashdot|http://feeds.nytimes.com/nyt/rss/HomePage';
+    tmnLogs = [];
+    disableLogs = false;
+    saveLogs =  true;
+    kwBlackList = [];
+    useBlackList = true;
+    useDHSList = false;
+    zeitgeist = ["facebook","youtube","myspace","craigslist","ebay","yahoo","walmart","netflix","amazon","home depot","best buy","Kentucky Derby","NCIS","Offshore Drilling","Halle Berry","iPad Cases","Dorothy Provine","Emeril","Conan O'Brien","Blackberry","Free Comic Book Day"," American Idol","Palm","Montreal Canadiens","George Clooney","Crib Recall","Auto Financing","Katie Holmes","Madea's Big Happy Family","Old Navy Coupon","Sandra Bullock","Dancing With the Stars","M.I.A.","Matt Damon","Santa Clara County","Joey Lawrence","Southwest Airlines","Malcolm X","Milwaukee Bucks","Goldman Sachs","Hugh Hefner","Tito Ortiz","David McLaughlin","Box Jellyfish","Amtrak","Molly Ringwald","Einstein Horse","Oil Spill"," Bret Michaels","Mississippi Tornado","Stephen Hawking","Kelley Blue Book","Hertz","Mariah Carey","Taiwan Earthquake","Justin Bieber","Public Bike Rental","BlackBerry Pearl","NFL Draft","Jillian Michaels","Face Transplant","Dell","Jack in the Box","Rebbie Jackson","Xbox","Pampers","William Shatner","Earth Day","American Idol","Heather Locklear","McAfee Anti-Virus","PETA","Rihanna","South Park","Tiger Woods","Kate Gosselin","Unemployment","Dukan Diet","Oil Rig Explosion","Crystal Bowersox","New 100 Dollar Bill","Beastie Boys","Melanie Griffith","Borders","Tara Reid","7-Eleven","Dorothy Height","Volcanic Ash","Space Shuttle Discovery","Gang Starr","Star Trek","Michael Douglas","NASCAR","Isla Fisher","Beef Recall","Rolling Stone Magazine","ACM Awards","NASA Space Shuttle","Boston Marathon","Iraq","Jennifer Aniston"];
+    tmn_timeout = 6000;
+    prev_engine = "None";
+    burstEngine = '';
+    burstTimeout = 6000;
+    burstEnabled = false;
+    tmn_searchTimer =null;
+    burstCount = 0;
+    tmn_tab_id = -1;
+    tmn_id = 0;
+    tmn_logged_id = 0;
+    tmn_mode = 'timed';
+    tmn_errTimeout = null;
+    tmn_scheduledSearch = false;
+    tmn_query='No query sent yet';
+    currentTMNURL = '';
+    tmn_option_tab = null;
+    saveOptions();
+
+    return restartTMN();
+  }
+
   function restartTMN() {
     createTab();
     enabled = true;

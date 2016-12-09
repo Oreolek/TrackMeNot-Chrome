@@ -21,6 +21,12 @@ function loadHandlers() {
       $(this).fadeTo(500, 1.0);
     });
   });
+  $("#reset-options").click( function() {
+    browser.runtime.sendMessage({
+      'tmn':"TMNResetOptions"
+    });
+    window.location.reload();
+  });
 
   $("#show-add").click( function() {
     $("#add-engine-table").show();
