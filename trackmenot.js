@@ -1172,6 +1172,65 @@ TRACKMENOT.TMNSearch = function() {
     tmn_query='No query sent yet';
     currentTMNURL = '';
     tmn_option_tab = null;
+    engines = [
+		{
+      'id':'google',
+      'name':'Google Search',
+      'urlmap':"https://www.google.com/search?hl=en&q=|",
+      'regexmap':"^(https?:\/\/[a-z]+\.google\.(co\\.|com\\.)?[a-z]{2,3}\/(search){1}[\?]?.*?[&\?]{1}q=)([^&]*)(.*)$",
+      "host":"(www\.google\.(co\.|com\.)?[a-z]{2,3})$",
+      "testad":"let testad = function(ac,al) {return ( al&& (ac=='l'  || ac=='l vst')&& al.indexOf('http')==0 && al.indexOf('https')!=0);}",
+      'box':SearchBox_google,
+      'button':getButton_google
+    },
+		{
+      'id':'yahoo',
+      'name':'Yahoo! Search',
+      'urlmap':"http://search.yahoo.com/search;_ylt=" +getYahooId()+"?ei=UTF-8&fr=sfp&fr2=sfp&p=|&fspl=1",
+      'regexmap':"^(http:\/\/[a-z.]*?search\.yahoo\.com\/search.*?p=)([^&]*)(.*)$",
+      "host":"([a-z.]*?search\.yahoo\.com)$",
+      "testad":"let testad = function(ac,al) {return ( ac=='\"yschttl spt\"' || ac=='yschttl spt');}",
+      'box':SearchBox_yahoo,
+      'button':getButton_yahoo
+    },
+		{
+      'id':'bing',
+      'name':'Bing Search',
+      'urlmap':"http://www.bing.com/search?q=|",
+      'regexmap':"^(http:\/\/www\.bing\.com\/search\?[^&]*q=)([^&]*)(.*)$",
+      "host":"(www\.bing\.com)$",
+      "testad":"let testad = function(ac,al) {return ( al&& al.indexOf('http')==0&& al.indexOf('https')!=0 && al.indexOf('msn')<0 && al.indexOf('live')<0  && al.indexOf('bing')<0&& al.indexOf('microsoft')<0 && al.indexOf('WindowsLiveTranslator')<0 )    }",
+      'box':SearchBox_bing,
+      'button':getButton_bing
+    },
+		{
+      'id':'baidu',
+      'name':'Baidu Search',
+      'urlmap':"http://www.baidu.com/s?wd=|",
+      'regexmap':"^(http:\/\/www\.baidu\.com\/s\?.*?wd=)([^&]*)(.*)$",
+      "host":"(www\.baidu\.com)$",
+      "testad":"let testad = function(ac,al) {return ( al&& al.indexOf('baidu')<0 && al.indexOf('https')!=0);}",
+      'box':SearchBox_baidu,
+      'button':getButton_baidu
+    },
+		{
+      'id':'aol',
+      'name':'Aol Search',
+      'urlmap':"http://search.aol.com/aol/search?q=|",
+      'regexmap':"^(http:\/\/[a-z0-9.]*?search\.aol\.com\/aol\/search\?.*?q=)([^&]*)(.*)$",
+      "host":"([a-z0-9.]*?search\.aol\.com)$",
+      "testad":"let testad = function(ac,al){return(ac=='\"find\"'||ac=='find'&& al.indexOf('https')!=0 && al.indexOf('aol')<0 );}",
+      'box':SearchBox_aol,
+      'button':getButton_aol
+    },
+		{
+      'id':'ddg',
+      'name':'DuckDuckGo Search',
+      'urlmap':"http://duckduckgo.com/?q=|",
+      'regexmap':"^(http:\/\/duckduckgo\.com\/?q=)([^&]*)(.*)$"
+    }
+	  ];
+
     saveOptions();
 
     return restartTMN();
