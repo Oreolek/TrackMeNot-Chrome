@@ -25,7 +25,6 @@ TRACKMENOT.Menus = function() {
   function  _cout (msg) { console.log(msg);  }
 
   return {
-
     showHelp: function() {
       window.open("http://www.cs.nyu.edu/trackmenot/faq.html");
     },

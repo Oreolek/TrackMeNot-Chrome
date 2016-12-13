@@ -20,64 +20,64 @@ if(!TRACKMENOT)
   var TRACKMENOT = {};
 
 TRACKMENOT.TMNSearch = function() {
-    let tmn_tab_id = -1;
-    let tmn_tab = null;
-    let useTab = false;
-    let enabled = true;
-    let debug_ = true;
-    let load_full_pages = false;
-    let last_url = "";
-    let stop_when = "start";
-    let useIncrementals = true;
-    let incQueries = [];
-    let searchEngines = "google";
-    let engine = 'google';
-    let useRss = true;
-    let useUserList = false;
-    let TMNQueries = {};
-    let branch =  "extensions.trackmenot.";
-    let feedList = 'http://www.techmeme.com/index.xml|http://rss.slashdot.org/Slashdot/slashdot|http://feeds.nytimes.com/nyt/rss/HomePage';
-    let tmnLogs = [];
-    let disableLogs = false;
-    let saveLogs =  true;
-    let kwBlackList = [];
-    let useBlackList = true;
-    let useDHSList = false;
-    let zeitgeist = ["facebook","youtube","myspace","craigslist","ebay","yahoo","walmart","netflix","amazon","home depot","best buy","Kentucky Derby","NCIS","Offshore Drilling","Halle Berry","iPad Cases","Dorothy Provine","Emeril","Conan O'Brien","Blackberry","Free Comic Book Day"," American Idol","Palm","Montreal Canadiens","George Clooney","Crib Recall","Auto Financing","Katie Holmes","Madea's Big Happy Family","Old Navy Coupon","Sandra Bullock","Dancing With the Stars","M.I.A.","Matt Damon","Santa Clara County","Joey Lawrence","Southwest Airlines","Malcolm X","Milwaukee Bucks","Goldman Sachs","Hugh Hefner","Tito Ortiz","David McLaughlin","Box Jellyfish","Amtrak","Molly Ringwald","Einstein Horse","Oil Spill"," Bret Michaels","Mississippi Tornado","Stephen Hawking","Kelley Blue Book","Hertz","Mariah Carey","Taiwan Earthquake","Justin Bieber","Public Bike Rental","BlackBerry Pearl","NFL Draft","Jillian Michaels","Face Transplant","Dell","Jack in the Box","Rebbie Jackson","Xbox","Pampers","William Shatner","Earth Day","American Idol","Heather Locklear","McAfee Anti-Virus","PETA","Rihanna","South Park","Tiger Woods","Kate Gosselin","Unemployment","Dukan Diet","Oil Rig Explosion","Crystal Bowersox","New 100 Dollar Bill","Beastie Boys","Melanie Griffith","Borders","Tara Reid","7-Eleven","Dorothy Height","Volcanic Ash","Space Shuttle Discovery","Gang Starr","Star Trek","Michael Douglas","NASCAR","Isla Fisher","Beef Recall","Rolling Stone Magazine","ACM Awards","NASA Space Shuttle","Boston Marathon","Iraq","Jennifer Aniston"];
-    let tmn_timeout = 6000;
-    let prev_engine = "None";
-    let burstEngine = '';
-    let burstTimeout = 6000;
-    let burstEnabled = false;
-    let tmn_searchTimer =null;
-    let burstCount = 0;
-    let tmn_id = 0;
-    let tmn_logged_id = 0;
-    let tmn_mode = 'timed';
-    let tmn_errTimeout = null;
-    let tmn_scheduledSearch = false;
-    let tmn_query='No query sent yet';
-    let currentTMNURL = '';
-    let tmn_option_tab = null;
-    let worker_tab, worker_opt;
+  let tmn_tab_id = -1;
+  let tmn_tab = null;
+  let useTab = false;
+  let enabled = true;
+  let debug_ = true;
+  let load_full_pages = false;
+  let last_url = "";
+  let stop_when = "start";
+  let useIncrementals = true;
+  let incQueries = [];
+  let searchEngines = "google";
+  let engine = 'google';
+  let useRss = true;
+  let useUserList = false;
+  let TMNQueries = {};
+  let branch =  "extensions.trackmenot.";
+  let feedList = 'http://www.techmeme.com/index.xml|http://rss.slashdot.org/Slashdot/slashdot|http://feeds.nytimes.com/nyt/rss/HomePage';
+  let tmnLogs = [];
+  let disableLogs = false;
+  let saveLogs =  true;
+  let kwBlackList = [];
+  let useBlackList = true;
+  let useDHSList = false;
+  let zeitgeist = ["facebook","youtube","myspace","craigslist","ebay","yahoo","walmart","netflix","amazon","home depot","best buy","Kentucky Derby","NCIS","Offshore Drilling","Halle Berry","iPad Cases","Dorothy Provine","Emeril","Conan O'Brien","Blackberry","Free Comic Book Day"," American Idol","Palm","Montreal Canadiens","George Clooney","Crib Recall","Auto Financing","Katie Holmes","Madea's Big Happy Family","Old Navy Coupon","Sandra Bullock","Dancing With the Stars","M.I.A.","Matt Damon","Santa Clara County","Joey Lawrence","Southwest Airlines","Malcolm X","Milwaukee Bucks","Goldman Sachs","Hugh Hefner","Tito Ortiz","David McLaughlin","Box Jellyfish","Amtrak","Molly Ringwald","Einstein Horse","Oil Spill"," Bret Michaels","Mississippi Tornado","Stephen Hawking","Kelley Blue Book","Hertz","Mariah Carey","Taiwan Earthquake","Justin Bieber","Public Bike Rental","BlackBerry Pearl","NFL Draft","Jillian Michaels","Face Transplant","Dell","Jack in the Box","Rebbie Jackson","Xbox","Pampers","William Shatner","Earth Day","American Idol","Heather Locklear","McAfee Anti-Virus","PETA","Rihanna","South Park","Tiger Woods","Kate Gosselin","Unemployment","Dukan Diet","Oil Rig Explosion","Crystal Bowersox","New 100 Dollar Bill","Beastie Boys","Melanie Griffith","Borders","Tara Reid","7-Eleven","Dorothy Height","Volcanic Ash","Space Shuttle Discovery","Gang Starr","Star Trek","Michael Douglas","NASCAR","Isla Fisher","Beef Recall","Rolling Stone Magazine","ACM Awards","NASA Space Shuttle","Boston Marathon","Iraq","Jennifer Aniston"];
+  let tmn_timeout = 6000;
+  let prev_engine = "None";
+  let burstEngine = '';
+  let burstTimeout = 6000;
+  let burstEnabled = false;
+  let tmn_searchTimer =null;
+  let burstCount = 0;
+  let tmn_id = 0;
+  let tmn_logged_id = 0;
+  let tmn_mode = 'timed';
+  let tmn_errTimeout = null;
+  let tmn_scheduledSearch = false;
+  let tmn_query='No query sent yet';
+  let currentTMNURL = '';
+  let tmn_option_tab = null;
+  let worker_tab, worker_opt;
 
-    let skipex =new Array(
-      /calendar/i,/advanced/i,/click /i,/terms/i,/Groups/i,
-      /Images/,/Maps/,/search/i,/cache/i,/similar/i,/&#169;/,
-      /sign in/i,/help[^Ss]/i,/download/i,/print/i,/Books/i,/rss/i,
-      /google/i,/bing/i,/yahoo/i,/aol/i,/html/i,/ask/i,/xRank/,
-      /permalink/i,/aggregator/i,/trackback/,/comment/i,/More/,
-      /business solutions/i,/result/i,/ view /i,/Legal/,/See all/,
-      /links/i,/submit/i,/Sites/i,/ click/i,/Blogs/,/See your mess/,
-      /feedback/i,/sponsored/i,/preferences/i,/privacy/i,/News/,
-      /Finance/,/Reader/,/Documents/,/windows live/i,/tell us/i,
-      /shopping/i,/Photos/,/Video/,/Scholar/,/AOL/,/advertis/i,
-      /Webmasters/,/MapQuest/,/Movies/,/Music/,/Yellow Pages/,
-      /jobs/i,/answers/i,/options/i,/customize/i,/settings/i,
-      /Developers/,/cashback/,/Health/,/Products/,/QnABeta/,
-      /<more>/,/Travel/,/Personals/,/Local/,/Trademarks/,
-      /cache/i,/similar/i,/login/i,/mail/i,/feed/i
-    );
+  let skipex =new Array(
+    /calendar/i,/advanced/i,/click /i,/terms/i,/Groups/i,
+    /Images/,/Maps/,/search/i,/cache/i,/similar/i,/&#169;/,
+    /sign in/i,/help[^Ss]/i,/download/i,/print/i,/Books/i,/rss/i,
+    /google/i,/bing/i,/yahoo/i,/aol/i,/html/i,/ask/i,/xRank/,
+    /permalink/i,/aggregator/i,/trackback/,/comment/i,/More/,
+    /business solutions/i,/result/i,/ view /i,/Legal/,/See all/,
+    /links/i,/submit/i,/Sites/i,/ click/i,/Blogs/,/See your mess/,
+    /feedback/i,/sponsored/i,/preferences/i,/privacy/i,/News/,
+    /Finance/,/Reader/,/Documents/,/windows live/i,/tell us/i,
+    /shopping/i,/Photos/,/Video/,/Scholar/,/AOL/,/advertis/i,
+    /Webmasters/,/MapQuest/,/Movies/,/Music/,/Yellow Pages/,
+    /jobs/i,/answers/i,/options/i,/customize/i,/settings/i,
+    /Developers/,/cashback/,/Health/,/Products/,/QnABeta/,
+    /<more>/,/Travel/,/Personals/,/Local/,/Trademarks/,
+    /cache/i,/similar/i,/login/i,/mail/i,/feed/i
+  );
 
 	let testAd_google = function(anchorClass,anchorlink) {
     return (
@@ -276,7 +276,10 @@ TRACKMENOT.TMNSearch = function() {
 
   function runScript(tab) {
     worker_opt = tab.attach({
-      contentScriptFile: [data.url("jquery.js"),data.url("option-script.js")]
+      contentScriptFile: [
+        data.url("jquery.js"),
+        data.url("option-script.js")
+      ]
     });
     sendOptionToTab();
   }
