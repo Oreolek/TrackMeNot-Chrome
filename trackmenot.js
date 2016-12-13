@@ -1113,7 +1113,7 @@ TRACKMENOT.TMNSearch = function() {
     loggetter.then(function(item){
       tmnLogs = JSON.parse(item.logs_tmn);
       if (typeof tmnLogs === "object") {
-        tmnLogs = Object.keys(tmnLogs).map(x => tmnLogs[x])
+        tmnLogs = Object.keys(tmnLogs).map(x => tmnLogs[x]);
       }
     });
     let enginegetter = browser.storage.local.get("engines");
