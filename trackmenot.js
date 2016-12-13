@@ -24,7 +24,7 @@ TRACKMENOT.TMNSearch = function() {
   let tmn_tab = null;
   let useTab = false;
   let enabled = true;
-  let debug_ = true;
+  let debug_ = false;
   let load_full_pages = false;
   let last_url = "";
   let stop_when = "start";
@@ -542,14 +542,14 @@ TRACKMENOT.TMNSearch = function() {
     let qtype = randomElt(typeoffeeds);
     let queries = TMNQueries[qtype];
     queries = randomElt(queries);
-    if (queries.words) {
-      queries = queries.words;
-      queries = randomElt(queries);
-    }
     if (queries === null || queries === undefined) {
       console.log(TMNQueries);
       debug(qtype);
       debug(typeoffeeds);
+    }
+    if (queries.words && queries.words.length > 0) {
+      queries = queries.words;
+      queries = randomElt(queries);
     }
     let term = trim( queries );
     if (!term || term.length === 0) {
@@ -726,6 +726,9 @@ TRACKMENOT.TMNSearch = function() {
     //console.log (feedObject.name + " : " + feedObject.words)
 
     if (useRss) {
+      if (TMNQueries.rss === undefined) {
+        TMNQueries.rss = [];
+      }
       TMNQueries.rss.push(feedObject);
     }
 
@@ -1440,7 +1443,7 @@ TRACKMENOT.TMNSearch = function() {
         sendResponse({});
         break;
       case "TMNAddEngine":
-        alert(request.engine);
+        console.log(request.engine);
         addEngine(request.engine);
         sendResponse({});
         break;

@@ -51,6 +51,9 @@ function loadHandlers() {
       'tmn':"TMNDelEngine",
       'engine':del_engine
     });
+    setTimeout(function() {
+      window.location.reload()
+    }, 500);
   });
 
   $("#help-faq").click( function() {
@@ -70,7 +73,13 @@ function loadHandlers() {
       alert("Did not find 'trackmenot' in the URL");
       return;
     }
-    browser.runtime.sendMessage({'tmn':"TMNAddEngine",'engine': engine});
+    browser.runtime.sendMessage({
+      'tmn':"TMNAddEngine",
+      'engine': engine
+    });
+    setTimeout(function() {
+      window.location.reload()
+    }, 500);
   });
 }
 
