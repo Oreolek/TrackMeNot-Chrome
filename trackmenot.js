@@ -544,7 +544,7 @@ TRACKMENOT.TMNSearch = function() {
     queries = randomElt(queries);
     if (queries === null || queries === undefined) {
       console.log(TMNQueries);
-      debug(qtype);
+      console.log(qtype);
       debug(typeoffeeds);
     }
     if (queries.words && queries.words.length > 0) {
@@ -604,6 +604,14 @@ TRACKMENOT.TMNSearch = function() {
     while (TMNQueries.extracted.length > 200 ) {
       let rand = roll(0,TMNQueries.extracted.length-1);
       TMNQueries.extracted.splice(rand , 1);
+    }
+    for (let i=0; i<TMNQueries.extracted.length; i++) {
+      if (
+          TMNQueries.extracted[i] === null ||
+          TMNQueries.extracted[i] === undefined
+        ) {
+        TMNQueries.extracted.splice(i, 1);
+      }
     }
     debug (TMNQueries.extracted);
     addQuery(queryToAdd,TMNQueries.extracted);
