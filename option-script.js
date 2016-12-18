@@ -1,9 +1,9 @@
 let tmn_options ={};
-let getting_tmn = browser.runtime.getBackgroundPage()
-let tmn = undefined;
+let getting_tmn = browser.runtime.getBackgroundPage();
+let tmn;
 getting_tmn.then(function(page) {
   tmn = page.TRACKMENOT.TMNSearch;
-})
+});
 let options = null;
 
 function loadHandlers() {
@@ -52,7 +52,7 @@ function loadHandlers() {
       'engine':del_engine
     });
     setTimeout(function() {
-      window.location.reload()
+      window.location.reload();
     }, 500);
   });
 
@@ -78,7 +78,7 @@ function loadHandlers() {
       'engine': engine
     });
     setTimeout(function() {
-      window.location.reload()
+      window.location.reload();
     }, 500);
   });
 }
@@ -150,6 +150,9 @@ function TMNShowLog() {
 }
 
 function TMNShowEngines(engines) {
+  if (!engines) {
+    return;
+  }
   let htmlStr = "<table>";
   for (let i=0; i < engines.length; i++) {
     let engine = engines[i];
@@ -322,7 +325,11 @@ function handleRequest(request, sender, sendResponse) {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-  TMNShowEngines(tmn._getTargetEngines());
+  if (tmn) {
+    TMNShowEngines(tmn._getTargetEngines());
+  } else {
+    TMNShowEngines();
+  }
   TMNSetOptionsMenu();
   loadHandlers();
 });

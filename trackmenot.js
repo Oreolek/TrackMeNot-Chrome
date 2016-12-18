@@ -20,11 +20,12 @@ if(!TRACKMENOT)
   var TRACKMENOT = {};
 
 TRACKMENOT.TMNSearch = function() {
+  let debug_ = true;
+
   let tmn_tab_id = -1;
   let tmn_tab = null;
   let useTab = false;
   let enabled = true;
-  let debug_ = false;
   let load_full_pages = false;
   let last_url = "";
   let stop_when = "start";
@@ -526,7 +527,7 @@ TRACKMENOT.TMNSearch = function() {
    */
   function randomQuery()  {
     let randomElt = function (arr) {
-      if (arr === null) {
+      if (!arr) {
         console.trace();
         return arr;
       }
@@ -541,6 +542,9 @@ TRACKMENOT.TMNSearch = function() {
         TMNQueries[type] !== null &&
         TMNQueries[type].length > 0
       ) {
+        if (TMNQueries[type][0].words && TMNQueries[type][0].words.length === 0) {
+          continue;
+        }
         typeoffeeds.push(type);
       }
     }
@@ -557,8 +561,12 @@ TRACKMENOT.TMNSearch = function() {
     }
     let term = trim( queries );
     if (!term || term.length === 0) {
-      if (debug_)
+      if (debug_) {
+        console.log(queries);
+        console.log(qtype);
+        console.log(typeoffeeds);
         throw new Error("getQuery.term='"+term+"'");
+      }
       return false;
     }
     return term;
@@ -792,19 +800,16 @@ TRACKMENOT.TMNSearch = function() {
   function getSubQuery(queryWords) {
     let incQuery = "";
     let randomArray = [];
-    for (let k = 0; k < queryWords.length ; k++) {
+    for (let k = 0; k < queryWords.length && k < 5; k++) {
       let randomIndex = roll(0,queryWords.length-1);
       if ( randomArray.indexOf(randomIndex) < 0)
         randomArray.push(randomIndex);
     }
     randomArray.sort();
-    for (let k = 0; k < randomArray.length-1 && k < 5; k++) {
+    for (let k = 0; k < randomArray.length-1; k++) {
       incQuery += queryWords[randomArray[k]]+' ';
     }
-    incQuery += queryWords[randomArray[k]];
-    if (incQueries) {
-      incQueries.push(trim(incQuery));
-    }
+    incQueries.push(trim(incQuery));
   }
 
   function getQuery() {
@@ -1093,7 +1098,13 @@ TRACKMENOT.TMNSearch = function() {
   function restoreOptions () {
     let getter = browser.storage.local.get("options_tmn");
     getter.then(function(item) {
-      let options = JSON.parse(item.options_tmn);
+      let options;
+      try {
+        options = JSON.parse(item.options_tmn);
+      } catch (e) {
+        resetOptions();
+        return;
+      }
       enabled = options.enabled;
       debug("Restore: "+ enabled);
       useBlackList = options.use_black_list;
@@ -1121,18 +1132,30 @@ TRACKMENOT.TMNSearch = function() {
     });
     let querygetter = browser.storage.local.get("gen_queries");
     querygetter.then(function(item){
-      TMNQueries = JSON.parse(item.gen_queries);
+      try {
+        TMNQueries = JSON.parse(item.gen_queries);
+      } catch (e) {
+        TMNQueries = {};
+      }
     });
     let loggetter = browser.storage.local.get("logs_tmn");
     loggetter.then(function(item){
-      tmnLogs = JSON.parse(item.logs_tmn);
-      if (typeof tmnLogs === "object") {
-        tmnLogs = Object.keys(tmnLogs).map(x => tmnLogs[x]);
+      try {
+        tmnLogs = JSON.parse(item.logs_tmn);
+        if (typeof tmnLogs === "object") {
+          tmnLogs = Object.keys(tmnLogs).map(x => tmnLogs[x]);
+        }
+      } catch (e) {
+        tmnLogs = [];
       }
     });
     let enginegetter = browser.storage.local.get("engines");
     enginegetter.then(function(item){
-      engines =  JSON.parse(item.engines);
+      try {
+        engines = JSON.parse(item.engines);
+      } catch (e) {
+        resetOptions();
+      }
     });
   }
 

@@ -47,26 +47,32 @@ TRACKMENOT.Menus = function() {
 
 
     onLoadMenu: function( ) {
-      tmn = chrome.extension.getBackgroundPage().TRACKMENOT.TMNSearch;
-      options = tmn._getOptions();
-      tmn_option_query = tmn._getQuery();
-      tmn_option_engine =  tmn._getEngine();
+      getting_tmn = browser.runtime.getBackgroundPage();
+      getting_tmn.then(function(page){
+        console.log(page);
+        tmn = page.TRACKMENOT.TMNSearch;
 
-      $("#trackmenot-label").html(tmn_option_engine + " '"+ tmn_option_query+"'");
+        if (tmn) {
+          options = tmn._getOptions();
+          tmn_option_query = tmn._getQuery();
+          tmn_option_engine =  tmn._getEngine();
 
+          $("#trackmenot-label").html(tmn_option_engine + " '"+ tmn_option_query+"'");
+        }
 
-      if ( options.enabled) {
-        $("#trackmenot-enabled").html('Disable');
-        $("#trackmenot-img-enabled").attr("src", "images/skin/off_icon.png");
-      }  else {
-        $("#trackmenot-enabled").html('Enable');
-        $("#trackmenot-img-enabled").attr("src", "images/skin/on_icon.png");
-      }
+        if ( !tmn || options.enabled ) {
+          $("#trackmenot-enabled").html('Disable');
+          $("#trackmenot-img-enabled").attr("src", "images/skin/off_icon.png");
+        }  else {
+          $("#trackmenot-enabled").html('Enable');
+          $("#trackmenot-img-enabled").attr("src", "images/skin/on_icon.png");
+        }
 
-      if (options.useTab)
-        $("#trackmenot-menu-useTab").html('Stealth');
-      else
-        $("#trackmenot-menu-useTab").html('Tab');
+        if (!tmn || options.useTab)
+          $("#trackmenot-menu-useTab").html('Stealth');
+        else
+          $("#trackmenot-menu-useTab").html('Tab');
+      });
     }
   };
 }();
@@ -74,7 +80,7 @@ TRACKMENOT.Menus = function() {
 document.addEventListener('DOMContentLoaded', function () {
   $("#trackmenot-menu-useTab").click(TRACKMENOT.Menus.toggleTabFrame);
   $("#trackmenot-enabled").click(TRACKMENOT.Menus.toggleOnOff);
-  $("#trackmenot-menu-win").click(function() { window.open(chrome.extension.getURL('options.html'));});
+  $("#trackmenot-menu-win").click(function() { window.open(browser.extension.getURL('options.html'));});
   $("#trackmenot-menu-help").click(TRACKMENOT.Menus.showHelp);
   TRACKMENOT.Menus.onLoadMenu();
 });
