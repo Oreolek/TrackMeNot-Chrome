@@ -117,7 +117,7 @@ TRACKMENOT.TMNSearch = function() {
     );
   };
 
-	let  testAd_baidu = function(anchorClass,anchorlink) {
+	let testAd_baidu = function(anchorClass,anchorlink) {
     return (
       anchorlink &&
       anchorlink.indexOf('baidu') < 0 &&
@@ -125,17 +125,17 @@ TRACKMENOT.TMNSearch = function() {
     );
   };
 
-	let getButton_google =" let getButton = function(  ) {let button = getElementsByAttrValue(document,'button', 'name', 'btnG' );		if ( !button ) button = getElementsByAttrValue(document,'button', 'name', 'btnK' );return button;}";
-	let getButton_yahoo= " let getButton = function(  ) {return getElementsByAttrValue(document,'input', 'class', 'sbb' ); } ";
-	let getButton_bing= " let getButton = function(  ) {return document.getElementById('sb_form_go');}  ";
-	let getButton_aol = " let getButton = function (  ) {return document.getElementById('csbbtn1');   }";
-	let getButton_baidu = " let getButton = function (  ){ return getElementsByAttrValue(document,'input', 'value', '????' ); }";
+	const getButton_google =" let getButton = function(  ) {let button = getElementsByAttrValue(document,'button', 'name', 'btnG' );		if ( !button ) button = getElementsByAttrValue(document,'button', 'name', 'btnK' );return button;}";
+	const getButton_yahoo= " let getButton = function(  ) {return getElementsByAttrValue(document,'input', 'class', 'sbb' ); } ";
+	const getButton_bing= " let getButton = function(  ) {return document.getElementById('sb_form_go');}  ";
+	const getButton_aol = " let getButton = function (  ) {return document.getElementById('csbbtn1');   }";
+	const getButton_baidu = " let getButton = function (  ){ return getElementsByAttrValue(document,'input', 'value', '????' ); }";
 
-  SearchBox_google = "let searchbox = function( ) { return getElementsByAttrValue(document,'input', 'name', 'q' ); } ";
-	SearchBox_yahoo = "let searchbox = function(  ) { return document.getElementById('yschsp');}";
-	SearchBox_bing= "let searchbox = function(  ) {return document.getElementById('sb_form_q'); } ";
-	SearchBox_aol= "let searchbox = function(  ) {return document.getElementById('csbquery1');  }";
-	SearchBox_baidu= "let searchbox = function(  ) {return document.getElementById('kw');}";
+  const SearchBox_google = "let searchbox = function( ) { return getElementsByAttrValue(document,'input', 'name', 'q' ); } ";
+	const SearchBox_yahoo = "let searchbox = function(  ) { return document.getElementById('yschsp');}";
+	const SearchBox_bing= "let searchbox = function(  ) {return document.getElementById('sb_form_q'); } ";
+	const SearchBox_aol= "let searchbox = function(  ) {return document.getElementById('csbquery1');  }";
+	const SearchBox_baidu= "let searchbox = function(  ) {return document.getElementById('kw');}";
 
   let suggest_google =  ['gsr' , 'td', function ( elt ) {
     return (elt.hasAttribute('class') && elt.getAttribute('class') == 'gac_c' );
@@ -324,7 +324,8 @@ TRACKMENOT.TMNSearch = function() {
   }
 
   function changeTabStatus(useT) {
-    if ( useT == useTab) return;
+    if ( useT == useTab )
+      return;
     if ( useT ) {
       useTab  = useT;
       createTab() ;
@@ -337,7 +338,9 @@ TRACKMENOT.TMNSearch = function() {
   function iniTab(tab) {
     tmn_tab_id = tab.id;
     tmn_win_id = tab.windowId;
-    browser.storage.local.set({"tmn_tab_id": tmn_tab_id});
+    browser.storage.local.set({
+      "tmn_tab_id": tmn_tab_id
+    });
   }
 
   function getTMNTab() {
@@ -420,6 +423,9 @@ TRACKMENOT.TMNSearch = function() {
   }
 
   function trim(s) {
+    if (!s || typeof s !== "string") {
+      return "";
+    }
     return s.replace(/\n/g,'');
   }
 
@@ -524,7 +530,7 @@ TRACKMENOT.TMNSearch = function() {
         console.trace();
         return arr;
       }
-      let index = roll(0, arr.length - 1);
+      const index = roll(0, arr.length - 1);
       return arr[index];
     };
 
@@ -539,17 +545,15 @@ TRACKMENOT.TMNSearch = function() {
       }
     }
 
-    let qtype = randomElt(typeoffeeds);
+    const qtype = randomElt(typeoffeeds);
     let queries = TMNQueries[qtype];
     queries = randomElt(queries);
-    if (queries === null || queries === undefined) {
-      console.log(TMNQueries);
-      console.log(qtype);
-      debug(typeoffeeds);
-    }
     if (queries.words && queries.words.length > 0) {
       queries = queries.words;
       queries = randomElt(queries);
+    }
+    if (queries === null || queries === undefined) {
+      return null;
     }
     let term = trim( queries );
     if (!term || term.length === 0) {
@@ -563,8 +567,8 @@ TRACKMENOT.TMNSearch = function() {
   function validateFeeds(param) {
     TMNQueries.rss = [];
     feedList = param.feeds;
-    console.log ("Validating the feeds: "+ feedList);
-    let feeds = feedList.split('|');
+    debug ("Validating the feeds: "+ feedList);
+    const feeds = feedList.split('|');
     for (let i=0;i<feeds.length;i++) {
       console.log (" Fetching  " + feeds[i]);
       doRssFetch(feeds[i]);
@@ -573,8 +577,8 @@ TRACKMENOT.TMNSearch = function() {
   }
 
   function extractQueries(html)    {
-    let forbiddenChar = new RegExp("^[ @#<>\"\\\/,;'{}:?%|\^~`=]", "g");
-    let splitRegExp = new RegExp('^[\\[\\]\\(\\)\\"\']', "g");
+    const forbiddenChar = new RegExp("^[ @#<>\"\\\/,;'{}:?%|\^~`=]", "g");
+    const splitRegExp = new RegExp('^[\\[\\]\\(\\)\\"\']', "g");
 
     if (!html) {
       console.log ("NO HTML!");
@@ -591,7 +595,7 @@ TRACKMENOT.TMNSearch = function() {
       //if (/([a-z]+ [a-z]+)/i.test(l[i])) {
       //let reg = /([a-z]{4,} [a-z]{4,} [a-z]{4,} ([a-z]{4,} ?) {0,3})/i;
       let matches = l[i].split(" ");//reg.exec(l[i]);
-      if (!matches || matches.length<2)
+      if (!matches || matches.length < 2)
         continue;
       let newQuery = trim(matches[1]);
       // if ( phrases.length >0 ) newQuery.unshift(" ");
@@ -599,12 +603,14 @@ TRACKMENOT.TMNSearch = function() {
         phrases.push(newQuery);
     }
 
-    let queryToAdd = phrases.join(" ");
+    const queryToAdd = phrases.join(" ");
     TMNQueries.extracted = [].concat(TMNQueries.extracted);
     while (TMNQueries.extracted.length > 200 ) {
       let rand = roll(0,TMNQueries.extracted.length-1);
       TMNQueries.extracted.splice(rand , 1);
     }
+
+    // remove empty items
     for (let i=0; i<TMNQueries.extracted.length; i++) {
       if (
           TMNQueries.extracted[i] === null ||
@@ -629,7 +635,7 @@ TRACKMENOT.TMNSearch = function() {
   }
 
   function queryOk(a)    {
-    for ( i = 0;i < skipex.length; i++) {
+    for (let i = 0;i < skipex.length; i++) {
       if (skipex[i].test(a))
         return false;
     }
@@ -637,35 +643,29 @@ TRACKMENOT.TMNSearch = function() {
   }
 
   function addQuery(term, queryList) {
+    if (!term) {
+      return false;
+    }
+
     let noniso = new RegExp("[^a-zA-Z0-9_.\ \\u00C0-\\u00FF+]+","g");
 
-    term = term.replace(noniso,'');
-    term = trim(term);
-
-    if ( isBlackList(term) )
-      return false;
+    term = trim(term.replace(noniso,''));
 
     if (
       !term ||
-      (term.length<3) ||
-      (queryList.indexOf(term) > 0)
-    )
-      return false;
-
-    if (
+      typeof term !== "string" ||
+      isBlackList(term) ||
+      (term.length < 3) ||
+      (queryList.indexOf(term) > 0) ||
       term.indexOf("\"\"") > -1 ||
-      term.indexOf("--") > -1
+      term.indexOf("--") > -1 ||
+      // test for negation of a single term (eg '-prison')
+      (
+        term.indexOf("-") === 0 &&
+        term.indexOf(" ") < 0
+      ) ||
+      !queryOk(term)
     )
-      return false;
-
-    // test for negation of a single term (eg '-prison')
-    if (
-      term.indexOf("-") === 0 &&
-      term.indexOf(" ") < 0
-    )
-      return false;
-
-    if (!queryOk(term))
       return false;
 
     queryList.push(term);
@@ -676,10 +676,9 @@ TRACKMENOT.TMNSearch = function() {
 
   // returns # of keywords added
   function filterKeyWords(rssTitles, feedUrl) {
-    let addStr = ""; //tmp-debugging
-    let forbiddenChar = new RegExp("[ @#<>\"\\\/,;'{}:?%|\^~`=]+", "g");
-    let splitRegExp = new RegExp('[\\[\\]\\(\\)\\"\']+', "g");
-    let wordArray = rssTitles.split(forbiddenChar);
+    const forbiddenChar = new RegExp("[ @#<>\"\\\/,;'{}:?%|\^~`=]+", "g");
+    const splitRegExp = new RegExp('[\\[\\]\\(\\)\\"\']+', "g");
+    const wordArray = rssTitles.split(forbiddenChar);
 
     for (let i=0; i < wordArray.length; i++)  {
       if ( !wordArray[i].match('-----') ) {
@@ -692,37 +691,38 @@ TRACKMENOT.TMNSearch = function() {
             wordArray[i+1].match(splitRegExp))
           ) {
             let nextWord = wordArray[i+1];   // added new check here -dch
-            if ( nextWord != nextWord.toLowerCase())  {
-              nextWord=trim(nextWord.toLowerCase().replace(/\s/g,'').replace(/[(<>"'&]/g,''));
+            if ( nextWord != nextWord.toLowerCase()) {
+              nextWord = trim(nextWord.toLowerCase().replace(/\s/g,'').replace(/[(<>"'&]/g,''));
               if (nextWord.length>1)  {
-                    word += ' '+nextWord;
+                word += ' '+nextWord;
               }
             }
             i++;
           }
           word = word.replace(/-----/g,'');
-          addStr += word+", "; //tmp
         }
       }
     }
-    return addStr;
   }
 
   // returns # of keywords added
   function addRssTitles(xmlData, feedUrl) {
     let rssTitles = "";
 
-    if (!xmlData) return 0;  // only for asynchs? -dch
+    if (!useRss || !xmlData) {
+      return 0;
+    }
 
-    let feedTitles = xmlData.getElementsByTagName("title");
-    if (!feedTitles|| feedTitles.length<2)  {
+    const feedTitles = xmlData.getElementsByTagName("title");
+    if (!feedTitles || feedTitles.length < 2)  {
       cerr("no items("+feedTitles+") for rss-feed: "+feedUrl);
       return 0;
     }
+
     let feedObject = {};
     feedObject.name = feedTitles[0].firstChild.nodeValue;
     feedObject.words = [];
-    //console.log ('ADD RSS title : '+ feedTitles[0].firstChild.nodeValue);
+
     for (let i=1; i<feedTitles.length; i++){
       if ( feedTitles[i].firstChild ) {
         rssTitles = feedTitles[i].firstChild.nodeValue;
@@ -731,19 +731,16 @@ TRACKMENOT.TMNSearch = function() {
       let queryToAdd = filterKeyWords(rssTitles,  feedUrl);
       addQuery(queryToAdd,feedObject.words);
     }
-    //console.log (feedObject.name + " : " + feedObject.words)
 
-    if (useRss) {
-      if (TMNQueries.rss === undefined) {
-        TMNQueries.rss = [];
-      }
-      TMNQueries.rss.push(feedObject);
+    if (TMNQueries.rss === undefined) {
+      TMNQueries.rss = [];
     }
+    TMNQueries.rss.push(feedObject);
 
     return 1;
   }
 
-  function  readDHSList() {
+  function readDHSList() {
     TMNQueries.dhs = [];
     let i = 0;
     let req =  new XMLHttpRequest();
@@ -767,15 +764,15 @@ TRACKMENOT.TMNSearch = function() {
   }
 
   function doRssFetch(feedUrl){
+    if (!useRss) {
+      return ;
+    }
     try {
       req = new XMLHttpRequest();
       req.open('GET', feedUrl, true);
       req.onreadystatechange = function(){
-        if (req.readyState == 4) {
-          if (req.status == 200) {
-            debug (req.responseText);
-            let adds = addRssTitles(req.responseXML, feedUrl);
-          }
+        if (req.readyState == 4 && req.status === 200) {
+          addRssTitles(req.responseXML, feedUrl);
         }
       };
       req.send(null);
@@ -788,7 +785,7 @@ TRACKMENOT.TMNSearch = function() {
         ex.message+
         " | Using defaults..."
       );
-      return ; // no adds here...
+      return ;
     }
   }
 
@@ -796,21 +793,25 @@ TRACKMENOT.TMNSearch = function() {
     let incQuery = "";
     let randomArray = [];
     for (let k = 0; k < queryWords.length ; k++) {
-      randomIndex = roll(0,queryWords.length-1);
+      let randomIndex = roll(0,queryWords.length-1);
       if ( randomArray.indexOf(randomIndex) < 0)
         randomArray.push(randomIndex);
     }
     randomArray.sort();
-    for ( k = 0; k < randomArray.length-1 && k < 5; k++) {
+    for (let k = 0; k < randomArray.length-1 && k < 5; k++) {
       incQuery += queryWords[randomArray[k]]+' ';
     }
     incQuery += queryWords[randomArray[k]];
-    if (incQueries)
+    if (incQueries) {
       incQueries.push(trim(incQuery));
+    }
   }
 
   function getQuery() {
-    let term = randomQuery();
+    let term = null;
+    while (!term) {
+      term = randomQuery();
+    }
     if (term.indexOf('\n') > 0) { // yuck, replace w' chomp();
       while (true) {
         for (let i = 0;i < term.length; i++) {
@@ -874,7 +875,7 @@ TRACKMENOT.TMNSearch = function() {
         sendQuery(null);
       else {
         newquery = getQuery();
-        queryWords = newquery.split(' ');
+        const queryWords = newquery.split(' ');
         if (queryWords.length > 3 )   {
           getSubQuery(queryWords);
           if (useIncrementals)   {
@@ -955,7 +956,6 @@ TRACKMENOT.TMNSearch = function() {
       updateOnSend(queryToSend);
       xhr.send();
       currentTMNURL = queryURL;
-
     }
   }
 
@@ -1549,9 +1549,8 @@ TRACKMENOT.TMNSearch = function() {
     },
 
     _getQuery:function() {
-      return this.queryToSend;
+      return tmn_query;
     },
-
     _saveOptions: function() {
       return saveOptions();
     },
