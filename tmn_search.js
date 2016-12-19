@@ -48,51 +48,6 @@ TRACKMENOT.TMNInjected = function() {
     //cout("GENERATED ID="+id);
     return id;
   }
-  var testAd_google = function(anchorClass,anchorlink) {
-    return (
-      anchorlink &&
-      (
-        anchorClass=='l' ||
-        anchorClass=='l vst'
-      ) &&
-      anchorlink.indexOf('http') === 0 &&
-      anchorlink.indexOf('https') !== 0
-    );
-  };
-
-  var testAd_yahoo= function(anchorClass,anchorlink) {
-    return ( anchorClass=='\"yschttl spt\"' || anchorClass=='yschttl spt');
-  };
-
-  var  testAd_aol = function(anchorClass,anchorlink) {
-    return (
-      anchorClass=='\"find\"' ||
-      anchorClass=='find' &&
-      anchorlink.indexOf('https') !== 0 &&
-      anchorlink.indexOf('aol')<0
-    );
-  };
-
-  var testAd_bing = function(anchorClass,anchorlink) {
-    return (
-      anchorlink &&
-      anchorlink.indexOf('http') === 0 &&
-      anchorlink.indexOf('https') !== 0 &&
-      anchorlink.indexOf('msn')<0 &&
-      anchorlink.indexOf('live')<0 &&
-      anchorlink.indexOf('bing')<0 &&
-      anchorlink.indexOf('microsoft')<0 &&
-      anchorlink.indexOf('WindowsLiveTranslator')<0
-    );
-  };
-
-  var  testAd_baidu = function(anchorClass,anchorlink) {
-    return (
-      anchorlink &&
-      anchorlink.indexOf('baidu') < 0 &&
-      anchorlink.indexOf('https') !== 0
-    );
-  };
 
   var getButton_google =" var getButton = function(  ) {var button = getElementsByAttrValue(document,'button', 'name', 'btnG' );		if ( !button ) button = getElementsByAttrValue(document,'button', 'name', 'btnK' );return button;}";
   var getButton_yahoo= " var getButton = function(  ) {return getElementsByAttrValue(document,'input', 'class', 'sbb' ); } ";
@@ -105,26 +60,6 @@ TRACKMENOT.TMNInjected = function() {
   SearchBox_bing= "var searchbox = function(  ) {return document.getElementById('sb_form_q'); } ";
   SearchBox_aol= "var searchbox = function(  ) {return document.getElementById('csbquery1');  }";
   SearchBox_baidu= "var searchbox = function(  ) {return document.getElementById('kw');}";
-
-  var  suggest_google =  ['gsr' , 'td', function ( elt ) {
-    return (elt.hasAttribute('class') && elt.getAttribute('class') == 'gac_c' );
-  }];
-
-  var suggest_yahoo = ['atgl' , 'a', function ( elt ) {
-    return elt.hasAttribute('gossiptext');
-  }];
-
-  var suggest_bing = ['sa_drw' , 'li', function ( elt ) {
-    return (elt.hasAttribute('class') && elt.getAttribute('class') == 'sa_sg' );
-  }];
-
-  var suggest_baidu = ['st' , 'tr', function ( elt ) {
-    return (elt.hasAttribute('class') && elt.getAttribute('class') == 'ml' );
-  }];
-
-  var suggest_aol = ['ACC' , 'a', function ( elt ) {
-    return (elt.hasAttribute('class') && elt.getAttribute('class') == 'acs');
-  }];
 
   var engines = [
   {'id':'google','name':'Google Search', 'urlmap':"https://www.google.com/search?hl=en&q=|", 'regexmap':"^(https?:\/\/[a-z]+\.google\.(co\\.|com\\.)?[a-z]{2,3}\/(search){1}[\?]?.*?[&\?]{1}q=)([^&]*)(.*)$", "host":"(www\.google\.(co\.|com\.)?[a-z]{2,3})$","testad":"var testad = function(ac,al) {return ( al&& (ac=='l'  || ac=='l vst')&& al.indexOf('http')==0 && al.indexOf('https')!=0);}",'box':SearchBox_google,'button':getButton_google} ,
@@ -290,7 +225,7 @@ TRACKMENOT.TMNInjected = function() {
   }
 
   function getQuerySuggestion() {
-    var suggestFilter =  suggest_filters[engine];
+    var suggestFilter = suggest_filters[engine];
     var searchTable = getElement(document,suggestFilter[0]);
     if ( !searchTable) return [];
     var sublines = searchTable.getElementsByTagName(suggestFilter[1]);
