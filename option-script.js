@@ -122,7 +122,7 @@ function TMNClearLogs() {
 
 function TMNShowLog() {
   let logs = tmn._getLogs();
-  let htmlStr = '<table witdh=500 cellspacing=3 bgcolor=white  frame=border>';
+  let htmlStr = '<table width=500 cellspacing=3 bgcolor=white  frame=border>';
   htmlStr += '<thead><tr align=left>';
   htmlStr += '<th>Engine</th>';
   htmlStr += '<th>Mode</th>';
@@ -167,7 +167,7 @@ function TMNShowEngines(engines) {
 function TMNShowQueries() {
   let sources = tmn._getAllQueries();
   let htmlStr =  '<a href="#userlist">Userlist</a> | <a href="#dhs">DHS</a> | <a href="#rss"> RSS </a> | <a href="#popular"> Popular </a>|<a href="#extracted"> Extracted</a>';
-  htmlStr += '<div style="height:1000px;overflow:auto;"><table witdh=500 cellspacing=3 bgcolor=white  frame=border>';
+  htmlStr += '<div style="height:1000px;overflow:auto;"><table width=500 cellspacing=3 bgcolor=white  frame=border>';
   let default_options = tmn._getOptions();
 
   if ( sources.userlist ) {

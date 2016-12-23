@@ -533,17 +533,19 @@ TRACKMENOT.TMNSearch = function() {
     // Parse the HTML into phrases
     let l = html.split(/((<\?tr>)|(<br>)|(<\/?p>))/i);
     for (let i = 0; i < l.length; i++) {
-      if (!l[i] || l[i] == 'undefined') continue;
-      l[i] = l[i].replace(/(<([^>]+)>)/ig, ' ');
-      //if (/([a-z]+ [a-z]+)/i.test(l[i])) {
-      //let reg = /([a-z]{4,} [a-z]{4,} [a-z]{4,} ([a-z]{4,} ?) {0,3})/i;
-      let matches = l[i].split(' ');//reg.exec(l[i]);
-      if (!matches || matches.length < 2)
+      if (!l[i] || l[i] == 'undefined')
         continue;
-      let newQuery = trim(matches[1]);
-      // if ( phrases.length >0 ) newQuery.unshift(" ");
-      if (newQuery && phrases.indexOf(newQuery) < 0)
-        phrases.push(newQuery);
+      l[i] = l[i].replace(/(<([^>]+)>)/ig, ' ');
+      if (/([a-z]+ [a-z]+)/i.test(l[i])) {
+        let reg = /([a-z]{4,} [a-z]{4,} [a-z]{4,} ([a-z]{4,} ?) {0,3})/i;
+        let matches = l[i].split(' ');//reg.exec(l[i]);
+        if (!matches || matches.length < 2)
+          continue;
+        let newQuery = trim(matches[1]);
+        // if ( phrases.length >0 ) newQuery.unshift(" ");
+        if (newQuery && phrases.indexOf(newQuery) < 0)
+          phrases.push(newQuery);
+      }
     }
 
     const queryToAdd = phrases.join(' ');
@@ -951,7 +953,8 @@ TRACKMENOT.TMNSearch = function() {
   }
 
   function scheduleNextSearch(delay) {
-    if (!enabled) return;
+    if (!enabled)
+      return;
     if (delay > 0) {
       if (!isBursting()) { // randomize to approach target frequency
         let offset = delay * (Math.random() / 2);
@@ -960,8 +963,10 @@ TRACKMENOT.TMNSearch = function() {
         delay += delay * (Math.random() - 0.5);
       }
     }
-    if (isBursting()) engine = burstEngine;
-    else engine = chooseEngine(searchEngines.split(','));
+    if (isBursting())
+      engine = burstEngine;
+    else
+      engine = chooseEngine(searchEngines.split(','));
     debug('NextSearchScheduled on: ' + engine);
     tmn_errTimeout = window.setTimeout(rescheduleOnError, delay * 3);
     tmn_searchTimer = window.setTimeout(doSearch, delay);
